@@ -1,0 +1,1543 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- =====================
+        BASIC META
+    ====================== -->
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+
+    <title>Frankline Ambetsa | Civil Engineer | Structural Engineer | BIM Specialist</title>
+    <meta name="description" content="Portfolio of Frankline Ambetsa — Civil Engineer, Structural Engineer, Quantity Surveyor, and BIM Specialist in Nairobi, Kenya. Explore projects, structural designs, architectural work, and engineering software expertise.">
+    <meta name="keywords" content="civil engineer Kenya, structural engineer Nairobi, BIM specialist Kenya, quantity surveyor, AutoCAD, ETABS, SAP2000, civil engineering portfolio, construction engineer Kenya">
+    <meta name="author" content="Frankline Ambetsa">
+
+    <!-- =====================
+        SEO CONTROL
+    ====================== -->
+    <meta name="robots" content="index, follow">
+    <link rel="canonical" href="https://yourdomain.com/">
+
+    <!-- =====================
+        OPEN GRAPH (FACEBOOK / LINKEDIN)
+    ====================== -->
+    <meta property="og:title" content="Frankline Ambetsa | Civil & Structural Engineer Portfolio">
+    <meta property="og:description" content="Explore engineering projects, structural designs, BIM models, and construction supervision experience by Frankline Ambetsa.">
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="https://yourdomain.com/">
+    <meta property="og:image" content="https://yourdomain.com/images/preview.jpg">
+
+    <!-- =====================
+        TWITTER CARD
+    ====================== -->
+    <meta name="twitter:card" content="summary_large_image">
+    <meta name="twitter:title" content="Frankline Ambetsa | Civil Engineer Portfolio">
+    <meta name="twitter:description" content="Civil, Structural, BIM & Quantity Surveying portfolio with real engineering projects.">
+    <meta name="twitter:image" content="https://yourdomain.com/images/preview.jpg">
+
+    <!-- =====================
+        FAVICON
+    ====================== -->
+    <link rel="icon" type="image/png" href="images/favicon.png">
+
+    <!-- =====================
+        PERFORMANCE
+    ====================== -->
+    <meta name="theme-color" content="#1e1e1e">
+    <meta name="format-detection" content="telephone=no">
+
+    <!-- =====================
+        ✅ C. Block iframe embedding (anti hotlink)
+    ====================== -->
+    <meta http-equiv="Content-Security-Policy" content="frame-ancestors 'self';">
+
+    <!-- =====================
+       ✅ D. Prevent search engines indexing PDFs
+    ====================== -->
+    <meta name="robots" content="noindex, nofollow">
+
+    <!-- =====================
+        STYLES & SCRIPTS
+    ====================== -->
+    <link rel="stylesheet" href="style.css">
+    <link rel="stylesheet" href="image_viewer.css">
+    <link rel="stylesheet" href="pdf.css">
+
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.min.js"></script>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css">
+    <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+</head>
+<body>
+
+
+<nav class="navbar">
+
+    <div class="logo">FrankTech Civil</div>
+
+    <ul>
+        <li><a href="#summary">Summary</a></li>
+        <li><a href="#summary-table">Expertise</a></li>
+        <li><a href="#skills">Software Skills</a></li>
+        <li><a href="#architecture">Architecture</a></li>
+        <li><a href="#structural">Structural</a></li>
+        <li><a href="#civil">Site Work</a></li>
+
+        <!-- ✅ NEW ADDED LINK -->
+        <li><a href="#quantity-survey">Quantity Surveying</a></li>
+
+        <li><a href="#projects">Projects</a></li>
+        <li><a href="#contact">Contact</a></li>
+    </ul>
+
+    <div class="hamburger" onclick="toggleMenu(event)">
+        ☰
+    </div>
+
+</nav>
+
+
+
+
+<!-- HERO -->
+<header class="hero">
+
+    <div class="hero-overlay"></div>
+
+    <!-- FLOATING BACKGROUND IMAGES -->
+    <div class="hero-float">
+        <img src="images/profile_pic.png" class="img-left" alt="">
+        <img src="images/profile_pic_another.png" class="img-center" alt="">
+        <img src="images/profile_pic_next.png" class="img-right" alt="">
+    </div>
+
+    <!-- SAFE CONTENT ZONE -->
+    <div class="hero-content">
+
+        <h1>Frankline Ambetsa</h1>
+
+        <p class="hero-roles">
+            <span>Project Manager</span>
+            <span>Civil Engineer</span>
+            <span>Structural Engineer</span>
+            <span>Site Engineer</span>
+            <span>Architectural Designer</span>
+            <span>Quantity Surveyor</span>
+            <span>Material Engineer</span>
+        </p>
+
+        <!-- MAIN ACTIONS -->
+        <div class="hero-buttons">
+
+            <button onclick="document.getElementById('architecture').scrollIntoView({behavior:'smooth'})">
+                View Projects
+            </button>
+
+            <button class="ghost" onclick="document.getElementById('summary').scrollIntoView({behavior:'smooth'})">
+                About Me
+            </button>
+        </div>
+
+        <!-- PROJECT CTA WRAPPER HEADER -->
+        <div class="hero-project-cta">
+
+            <p>
+                Have a project in mind?
+            </p>
+
+            <button class="ghost small" onclick="openProjectModal()">
+                Get Started
+            </button>
+
+        </div>
+
+        <!-- NEW CTA ACTIONS -->
+        <!-- PORTFOLIO & RESUME -->
+        <div class="hero-doc-box">
+
+            <h3>Portfolio & Resume</h3>
+
+            <div class="doc-row-inline">
+
+                <!-- PORTFOLIO -->
+                <div class="doc-item-inline">
+                    <span class="doc-title">Portfolio</span>
+
+                    <button class="mini-btn" onclick="requestDocument('Portfolio View')">
+                        View
+                    </button>
+                </div>
+
+                <!-- RESUME -->
+                <div class="doc-item-inline">
+                    <span class="doc-title">Resume</span>
+
+                    <button class="mini-btn" onclick="openResume()">
+                        View
+                    </button>
+                </div>
+
+            </div>
+
+        </div>
+
+    </div>
+
+</header>
+
+
+
+
+<!-- PROFESSIONAL SUMMARY -->
+
+<!-- PROFESSIONAL SUMMARY -->
+<section class="section split-section" id="summary">
+
+    <!-- LEFT SIDE -->
+    <div class="split-left">
+        <h2>PROFESSIONAL SUMMARY</h2>
+        <p class="subtitle">
+            Civil Engineering | Structural Design | Site Supervision | BIM & Data-Driven Engineering
+        </p>
+    </div>
+
+    <!-- RIGHT SIDE -->
+    <div class="split-right">
+
+        <p>
+            Civil Engineer graduate with <strong>extensive hands-on experience</strong> in
+            <strong>site engineering, structural design, architectural planning, quantity surveying,
+            land surveying, and construction supervision</strong>.
+        </p>
+
+        <p>
+            Proven ability to manage and contribute to <strong>large-scale infrastructure and residential projects</strong>,
+            ensuring strict compliance with <strong>quality standards, safety regulations, and cost efficiency</strong>.
+        </p>
+
+        <p>
+            Strong expertise in <strong>BIM tools, automation, and data-driven engineering</strong>,
+            integrating <strong>Python, analytics, and digital workflows</strong> to improve
+            <strong>design accuracy, material optimization, and project efficiency</strong>.
+        </p>
+
+        <p>
+            Experienced in <strong>land surveying and geospatial operations</strong> using
+            <strong>Total Station, GPS, and Dumpy Level</strong>, with strong capability in
+            translating field data into accurate construction execution.
+        </p>
+
+        <p>
+            Combines <strong>analytical thinking, engineering software proficiency, and practical site experience</strong>
+            to deliver <strong>reliable, efficient, and high-quality engineering solutions</strong>.
+        </p>
+
+    </div>
+
+</section>
+
+
+
+<!-- =====================
+     PROFESSIONAL SKILLS SUMMARY (TABLE STYLE)
+====================== -->
+
+<section class="section dark skills-summary" id="summary-table">
+    <h2>Professional Skills Summary</h2>
+
+    <table class="skills-table">
+
+        <thead>
+            <tr>
+                <th>Technical Area</th>
+                <th>Details</th>
+            </tr>
+        </thead>
+
+        <tbody>
+
+            <tr>
+                <td>Structural Engineering</td>
+                <td>
+                    <ul>
+                        <li>Reinforced concrete (RC) design, detailing, and structural optimization</li>
+                        <li>Steel structure analysis, design, and connection detailing</li>
+                        <li>Structural analysis of buildings, bridges, towers, and industrial structures</li>
+                        <li>Seismic load analysis and wind load assessment for structural safety</li>
+                        <li>Application of Eurocode, British Standards (BS), and other international design codes</li>
+                        <li>Foundation design including shallow and deep foundations (raft, pad, pile systems)</li>
+                        <li>Load calculations including dead, live, wind, seismic, and dynamic loads</li>
+                        <li>Use of structural engineering software for modeling, simulation, and verification</li>
+                        <li>Structural stability checks, serviceability analysis, and performance evaluation</li>
+                        <li>Construction stage analysis and structural integrity assessment</li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr>
+                <td>BIM & Architectural Design</td>
+                <td>
+                    <ul>
+                        <li>3D architectural modelling and visualization</li>
+                        <li>BIM coordination and clash detection workflows</li>
+                        <li>Architectural drafting and construction documentation</li>
+                        <li>High-quality rendering for project presentation</li>
+                        <li>Integration of structural and architectural models</li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Quantity Surveying</td>
+                <td>
+                    <ul>
+                        <li>Preparation of Bills of Quantities (BOQ) for building and civil engineering projects</li>
+                        <li>Accurate measurement of construction works using drawings and site data</li>
+                        <li>Cost estimation, cost planning, and project budgeting</li>
+                        <li>Preparation and evaluation of interim payment certificates (IPC)</li>
+                        <li>Variation orders assessment and cost control during project execution</li>
+                        <li>Use of measurement standards such as SMM and CESMM</li>
+                        <li>Material take-off and procurement quantity planning</li>
+                        <li>Cost analysis and value engineering to optimize project expenditure</li>
+                        <li>Tender documentation preparation and bid evaluation support</li>
+                        <li>Project cost reporting and financial tracking throughout project lifecycle</li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Site Engineering & Supervision</td>
+                <td>
+                    <ul>
+                        <li>Day-to-day site supervision of construction works to ensure compliance with design and specifications</li>
+                        <li>Setting out and verification of structural elements using total station, GPS, and leveling equipment</li>
+                        <li>Quality control and quality assurance (QA/QC) of construction materials and workmanship</li>
+                        <li>Monitoring contractor performance, progress tracking, and reporting of site activities</li>
+                        <li>Interpretation of drawings and coordination between architectural, structural, and MEP teams</li>
+                        <li>Inspection of reinforcement, formwork, concreting, and structural installations</li>
+                        <li>Ensuring compliance with health, safety, and environmental (HSE) standards on site</li>
+                        <li>Preparation of daily site reports, progress reports, and technical documentation</li>
+                        <li>Measurement of works and verification of quantities for interim payments</li>
+                        <li>Coordination with consultants, contractors, and clients for smooth project execution</li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Project Management</td>
+                <td>
+                    <ul>
+                        <li>Project scheduling using Critical Path Method (CPM), Gantt charts, and work breakdown structures (WBS)</li>
+                        <li>Use of project management tools such as Primavera P6 and Microsoft Project for planning and tracking</li>
+                        <li>Cost estimation, budgeting, cost control, and financial monitoring throughout project lifecycle</li>
+                        <li>Resource allocation including labor, materials, plant, and equipment optimization</li>
+                        <li>Construction progress monitoring, reporting, and milestone tracking</li>
+                        <li>Risk identification, assessment, and mitigation planning for construction projects</li>
+                        <li>Contractor coordination, site meetings, and stakeholder communication</li>
+                        <li>Procurement planning and material scheduling to ensure timely project delivery</li>
+                        <li>Quality control coordination and compliance with project specifications</li>
+                        <li>Preparation of project reports, dashboards, and performance evaluations</li>
+                    </ul>
+                </td>
+            </tr>
+            <tr>
+                <td>Land Surveying & Geospatial</td>
+                <td>
+                    <ul>
+                        <li>Topographic and land surveying</li>
+                        <li>Setting out and leveling for construction works</li>
+                        <li>GPS and Total Station field operations</li>
+                        <li>GIS mapping and spatial data analysis (QGIS / ArcGIS)</li>
+                        <li>Construction site layout and georeferencing</li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Data & Engineering Analysis</td>
+                <td>
+                    <ul>
+                        <li>Engineering computation and structural calculations</li>
+                        <li>Python-based automation for engineering workflows</li>
+                        <li>Advanced Excel data analysis and reporting</li>
+                        <li>Basic machine learning and predictive modeling</li>
+                        <li>Data visualization for engineering decision-making</li>
+                    </ul>
+                </td>
+            </tr>
+
+            <tr>
+                <td>Project Coordination</td>
+                <td>
+                    <ul>
+                        <li>Multidisciplinary team coordination</li>
+                        <li>Technical reporting and documentation</li>
+                        <li>Stakeholder communication and meetings</li>
+                        <li>Project monitoring and progress tracking</li>
+                        <li>Quality assurance and site supervision support</li>
+                    </ul>
+                </td>
+            </tr>
+
+        </tbody>
+
+    </table>
+</section>
+
+
+<!-- TECHNICAL SKILLS -->
+<!-- =====================
+     TECHNICAL SKILLS
+===================== -->
+<section class="section dark skills-section" id="skills">
+    <h2>Software Skills</h2>
+
+    <div class="skills-container">
+
+        <!-- =====================
+             CIVIL & STRUCTURAL
+        ====================== -->
+        <!-- =====================
+            CIVIL & STRUCTURAL ENGINEERING SOFTWARE
+        ====================== -->
+        <div class="skill-category">
+            <h3>Civil & Structural Engineering Software</h3>
+
+            <div class="skill">
+                <span>AutoCAD</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="95">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Civil 3D</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="88">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>CSI ETABS</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="92">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>SAP2000</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="90">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>SAFE</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="88">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>CSI Bridge</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="80">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Robot Structural Analysis</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="78">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Tekla Structures</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="82">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+
+            <div class="skill">
+                <span>DIANA FEA</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="70">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Revit</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="85">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>PROKON</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="80">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Bentley OpenBuildings (CONNECT Edition)</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="78">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>STAAD Pro</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="82">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>ProtaStructure</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="80">
+                    <div class="fill"></div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- =====================
+             BIM & ARCHITECTURE
+        ====================== -->
+        <!-- =====================
+            BIM & ARCHITECTURAL DESIGN
+        ====================== -->
+        <div class="skill-category">
+            <h3>BIM & Architectural Design</h3>
+
+            <div class="skill">
+                <span>Archicad</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="90">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Revit</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="85">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>SketchUp</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="80">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Lumion</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="85">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Twinmotion</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="80">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Enscape</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="75">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Atlantis</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="75">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>3ds Max</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="70">
+                    <div class="fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================
+             QS & COSTING
+        ====================== -->
+        <div class="skill-category">
+            <h3>Quantity Surveying & Costing</h3>
+
+            <div class="skill">
+                <span>Excel</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="95">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Bluebeam Revu</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="90">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Planswift</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="85">
+                    <div class="fill"></div>
+                </div>
+            </div>
+            <div class="skill">
+                <span>CostX</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="83">
+                    <div class="fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================
+            PROJECT MANAGEMENT
+        ====================== -->
+        <div class="skill-category">
+            <h3>Project Management</h3>
+
+            <div class="skill">
+                <span>Primavera P6</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="85">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Microsoft Project</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="92">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Trello</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="88">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Jira</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="85">
+                    <div class="fill"></div>
+                </div>
+            </div>
+        </div>
+        <!-- =====================
+             SURVEYING
+        ====================== -->
+        <!-- =====================
+            SURVEYING & GEOSPATIAL
+        ====================== -->
+        <div class="skill-category">
+            <h3>Surveying & Geospatial</h3>
+
+            <div class="skill">
+                <span>Total Station</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="75">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>GPS</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="75">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Dumpy Level</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="73">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>AutoCAD Civil 3D</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="88">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>GIS</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="62">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>QGIS</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="70">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>ArcGIS</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="65">
+                    <div class="fill"></div>
+                </div>
+            </div>
+        </div>
+
+        <!-- =====================
+             DATA & PROGRAMMING
+        ====================== -->
+        <div class="skill-category">
+            <h3>Data & Engineering Tools</h3>
+
+            <div class="skill">
+                <span>Python</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="95">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Data Analysis (Pandas, Excel)</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="90">
+                    <div class="fill"></div>
+                </div>
+            </div>
+
+            <div class="skill">
+                <span>Machine Learning (Basic)</span>
+                <span class="percent">0%</span>
+                <div class="bar" data-value="92">
+                    <div class="fill"></div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+<!-- ARCHITECTURE -->
+<section class="section" id="architecture">
+    <h2>Architectural Projects</h2>
+
+    <div class="project-grid">
+
+        <!-- PROJECT 1 -->
+        <div class="project-card">
+            <div class="slider" data-index="0">
+                <div class="slides">
+
+                    <img src="projects/architecture/barorot_adobe_house/front.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/barorot_adobe_house/side.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/barorot_adobe_house/lounge.jpg" onclick="openImage(this)">
+
+                </div>
+            </div>
+
+            <div class="project-info">
+                <h3>Barorot Adobe House Design</h3>
+
+                <p>
+                    • Conceptual residential architectural design (Adobe-inspired modern dwelling)<br>
+                    • Functional space planning and zoning (public, semi-private, private areas)<br>
+                    • Interior layout design for living, dining, kitchen, and bedrooms<br>
+                    • Natural lighting optimization through window placement and openings<br>
+                    • Cross-ventilation strategy for passive thermal comfort<br>
+                    • Spatial circulation flow optimization for user movement efficiency<br>
+                    • Material concept development (earthy textures, natural finishes)<br>
+                    • Roof form development for climatic response and aesthetic identity<br>
+                </p>
+
+                <button class="pdf-btn"
+                    onclick="openPDF('projects/architecture/barorot_adobe_house/BAROROT_ADOBE_HOUSE_DESIGN.pdf')">
+                    View Full Project
+                </button>
+            </div>
+        </div>
+
+
+        <!-- PROJECT 2 -->
+        <div class="project-card">
+            <div class="slider" data-index="0">
+                <div class="slides">
+
+                    <!-- EXTERIOR -->
+                    <img src="projects/architecture/casa_colina/casa.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/casaa.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/front.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/back.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/side.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/carilina.jpg" onclick="openImage(this)">
+
+                    <!-- INTERIOR -->
+                    <img src="projects/architecture/casa_colina/interior.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/pagolas_view.jpg" onclick="openImage(this)">
+
+                    <!-- BEDROOM -->
+                    <img src="projects/architecture/casa_colina/bedroom.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/bedroo.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/bedroom_side.jpg" onclick="openImage(this)">
+
+                    <!-- BATHROOM -->
+                    <img src="projects/architecture/casa_colina/bathroom.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/bathroom_mirror.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/casa_colina/bayhroom_front.jpg" onclick="openImage(this)">
+
+                </div>
+            </div>
+
+            <div class="project-info">
+                <h3>Casa Colina Project</h3>
+
+                <p>
+                    • Contemporary luxury residential architectural design<br>
+                    • Open-plan spatial configuration with fluid circulation<br>
+                    • Vertical circulation design (staircase integration as focal element)<br>
+                    • Daylighting strategy using large glazed openings<br>
+                    • Façade articulation with modern minimalist expression<br>
+                    • Interior spatial hierarchy and luxury zoning arrangement<br>
+                    • Landscape integration and indoor-outdoor spatial continuity<br>
+                    • 3D conceptual massing and architectural visualization<br>
+                </p>
+
+                <button class="pdf-btn"
+                    onclick="openPDF('projects/architecture/casa_colina/CASA_COLINA_DESIGN_COUNCIL_DRAWINGS.pdf')">
+                    View Full Project
+                </button>
+            </div>
+        </div>
+
+
+        <!-- PROJECT 3 -->
+        <div class="project-card">
+            <div class="slider" data-index="0">
+                <div class="slides">
+
+                    <img src="projects/architecture/stabex/bedroom.webp" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/dinning.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/kitchen.webp" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/lift_and_stairs.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/lounge.jpg" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/office.webp" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/offices.webp" onclick="openImage(this)">
+                    <img src="projects/architecture/stabex/stairs.jpg" onclick="openImage(this)">
+
+                </div>
+            </div>
+
+            <div class="project-info">
+                <h3>Stabex Detailed Architectural Design</h3>
+
+                <p>
+                    • Full architectural drawing package and design documentation<br>
+                    • Floor plan development and space allocation optimization<br>
+                    • Elevations and façade detailing with material specification intent<br>
+                    • Sectional drawings for spatial understanding and design clarity<br>
+                    • Staircase architectural detailing and spatial integration<br>
+                    • Roof layout design and drainage planning considerations<br>
+                    • Architectural coordination drawings for construction clarity<br>
+                    • Compliance with architectural drafting standards and presentation conventions<br>
+                </p>
+
+                <button class="pdf-btn"
+                    onclick="openPDF('projects/architecture/stabex/STABEX_DETAILED_DESIGN_DRAWINGS.pdf')">
+                    View Full Project
+                </button>
+            </div>
+        </div>
+
+    </div>
+</section>
+
+
+
+<!-- STRUCTURAL -->
+<section class="section dark" id="structural">
+    <h2>Structural Engineering</h2>
+
+    <div class="gallery">
+
+        <!-- VISIBLE -->
+        <div class="gallery-visible">
+            <img src="projects/structural_images/anaysis_sap_2000.avif" onclick="openImage(this.src)">
+            <img src="projects/structural_images/bending_momments_shear_force.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/bim_design_rcc_model_analysis.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/column_str_design_plan.jpg" onclick="openImage(this.src)">
+        </div>
+
+        <!-- HIDDEN -->
+        <div class="gallery-hidden" id="hiddenStructural">
+            <img src="projects/structural_images/padding_rcc_rebar_plan.webp" onclick="openImage(this.src)">
+            <img src="projects/structural_images/rcc_beam_model_and_column_correction_rebar.webp" onclick="openImage(this.src)">
+            <img src="projects/structural_images/rcc_column_beam_slab_and_foundation_rebar_plan.webp" onclick="openImage(this.src)">
+            <img src="projects/structural_images/rcc_concrete_design_model.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/rcc_concrete_model_design.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/rcc_slab_and_shear_wall_rebar_plan.png" onclick="openImage(this.src)">
+            <img src="projects/structural_images/rcc_stairs_rebar_model.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/sf_diagram_etabs_rcc.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/steel_design_full_model_analysis.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/steel_structural_design_connection.jpg" onclick="openImage(this.src)">
+            <img src="projects/structural_images/steel_struct_plan_details.webp" onclick="openImage(this.src)">
+            <img src="projects/structural_images/steel_str_design_bolts_anchor.webp" onclick="openImage(this.src)">
+            <img src="projects/structural_images/steel_str_design_plan_details.jpg" onclick="openImage(this.src)">
+        </div>
+
+    </div>
+
+    <div class="gallery-toggle">
+        <button onclick="toggleSection('hiddenStructural', this)">Show More</button>
+    </div>
+</section>
+
+
+<!-- QUANTITY SURVEYING -->
+<section class="section dark" id="quantity-survey">
+
+    <h2>Quantity Surveying</h2>
+
+    <div class="gallery">
+
+        <!-- VISIBLE -->
+        <div class="gallery-visible">
+
+            <img src="projects/quantity_survey_images/takeoff_estimation.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/bill_of_quantities.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/cost_estimation_breakdown.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/material_quantity_analysis.jpg" onclick="openImage(this.src)">
+
+        </div>
+
+        <!-- HIDDEN -->
+        <div class="gallery-hidden" id="hiddenQuantitySurvey">
+
+            <img src="projects/quantity_survey_images/rate_analysis.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/measurement_sheet.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/project_cost_control.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/interim_valuation.jpg" onclick="openImage(this.src)">
+            <img src="projects/quantity_survey_images/variation_orders.jpg" onclick="openImage(this.src)">
+
+        </div>
+
+    </div>
+
+    <div class="gallery-toggle">
+        <button onclick="toggleSection('hiddenQuantitySurvey', this)">
+            Show More
+        </button>
+    </div>
+
+</section>
+
+
+<!-- CIVIL -->
+<!-- CIVIL -->
+<section class="section dark" id="civil">
+    <h2>Civil & Site Supervision</h2>
+
+    <div class="gallery">
+
+        <!-- VISIBLE (FEATURED IMAGES) -->
+        <div class="gallery-visible">
+            <img src="projects/civil_images/affordable_project_housong_supervision.jpeg" onclick="openImage(this)">
+            <img src="projects/civil_images/flyover_site_supervision.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/site_engineering_with_foreman.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/concreting_slab.jpg" onclick="openImage(this)">
+        </div>
+
+        <!-- HIDDEN (DETAILED SITE WORK) -->
+        <div class="gallery-hidden" id="hiddenCivil">
+
+            <img src="projects/civil_images/bbs_site_engineering_slab.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/beams_floor_reinforcemet_supervision.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/beams_rebar_supervision.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/checking_beams_rebar.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/checking_beam_depth_from_shear_wall.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/checking_slab_rebar.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/checkin_slab_reinforcement_according_to_bbs.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/concreting_slabs.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/confirming_beams_depth.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/directing_workesr_on_rebar_and_slab_rebar_and_connection_with_beams_and_columns.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/final_confirmation_of_beams_and_shear_wall.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/formwork_for_slab.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/hidden_beam_in_slab_connection_with_column.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/introducing_hidden_beams_in_slab.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/slab_formwork_boards.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/slab_reinforcement_layout.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/slab_reinforcement_supervision_and_confirmation.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/supervision_of_floor_plumbing_and_electricity_pipes.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/construction_site_engineer.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/site_engineering_with_cooli_floor_reinforcement.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/biio_digester.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/finished_bio_digester.jpg" onclick="openImage(this)">
+            <img src="projects/civil_images/structural_site_supervision_evening.webp" onclick="openImage(this)">
+
+        </div>
+
+    </div>
+
+    <div class="gallery-toggle">
+        <button onclick="toggleSection('hiddenCivil', this)">Show More</button>
+    </div>
+</section>
+
+
+
+
+<!-- MODALS -->
+<div id="imgModal">
+
+    <div class="img-topbar">
+        <div class="img-title">
+            <i class="fa-solid fa-image"></i>
+            <span>Image Viewer</span>
+        </div>
+        <button class="icon-btn" onclick="downloadImage()" title="Download">
+            <i class="fa-solid fa-cloud-arrow-down"></i>
+        </button>
+
+        <button class="icon-btn danger" onclick="closeImage()" title="Close">
+            <i class="fa-solid fa-xmark"></i>
+        </button>
+    </div>
+
+    <div class="img-body">
+
+        <button class="modal-nav prev" onclick="modalPrev()" title="Previous">
+            <i class="fa-solid fa-chevron-left"></i>
+        </button>
+
+
+        <div class="img-wrapper">
+            <canvas id="modalCanvas"></canvas>
+        </div>
+
+        <button class="modal-nav next" onclick="modalNext()" title="Next">
+            <i class="fa-solid fa-chevron-right"></i>
+        </button>
+
+    </div>
+
+    <!-- 🔥 THUMBNAIL PREVIEW STRIP -->
+    <div class="img-preview-bar" id="previewBar"></div>
+
+    <div class="img-bottombar">
+
+        <button onclick="zoomOut()" class="icon-btn" title="Zoom Out">
+            <i class="fa-solid fa-magnifying-glass-minus"></i>
+        </button>
+
+        <div class="zoom-info">
+            <span id="zoomPercent">100%</span>
+        </div>
+
+        <button onclick="zoomIn()" class="icon-btn" title="Zoom In">
+            <i class="fa-solid fa-magnifying-glass-plus"></i>
+        </button>
+
+        <button onclick="resetZoom()" class="icon-btn" title="Fit Screen">
+            <i class="fa-solid fa-expand"></i>
+        </button>
+
+        <button onclick="fitMode='auto'; resetZoom()" class="icon-btn" title="Auto Fit">
+            <i class="fa-solid fa-maximize"></i>
+        </button>
+
+        <button onclick="fitMode='width'; resetZoom()" class="icon-btn" title="Fit Width">
+            <i class="fa-solid fa-arrows-left-right"></i>
+        </button>
+
+        <button onclick="fitMode='height'; resetZoom()" class="icon-btn" title="Fit Height">
+            <i class="fa-solid fa-arrows-up-down"></i>
+        </button>
+
+        <div class="zoom-info">
+            <span id="imgCounter">1 / 1</span>
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!-- PDF MODAL -->
+
+
+<div id="pdfModal" class="pdf-modal">
+
+    <div class="pdf-topbar">
+        <div class="pdf-left">
+            <div class="pdf-title">PDF Viewer</div>
+            <input type="text" id="searchInput" placeholder="Search...">
+            <button onclick="searchPDF()" title="Search PDF" class="icon-btn">
+                <i class="fa-solid fa-magnifying-glass"></i>
+            </button>
+        </div>
+
+        <div class="pdf-right">
+            <button onclick="downloadRenderedPDF()" title="Download PDF" class="icon-btn">
+                <i class="fa-solid fa-download"></i>
+            </button>
+
+            <button class="pdf-close" onclick="closePDF()" title="Close Viewer">
+                <i class="fa-solid fa-xmark"></i>
+            </button>
+        </div>
+    </div>
+
+    <!-- ================= BODY ================= -->
+    <div class="pdf-body">
+
+        <!-- 🔥 HAMBURGER TOGGLE -->
+        <button class="pdf-sidebar-toggle" onclick="toggleSidebar()">
+            <i class="fa-solid fa-list"></i>
+        </button>
+
+        <!-- 🔥 SIDEBAR (THUMBNAILS) -->
+        <div class="pdf-sidebar" id="pdfSidebar"></div>
+
+        <!-- VIEWER -->
+        <div class="pdf-viewer">
+            <div id="pdfContainer"></div>
+        </div>
+
+    </div>
+
+    <div class="pdf-toolbar">
+        <div class="toolbar-left">
+            <button id="btnZoomOut" title="Zoom Out" class="icon-btn">
+                <i class="fa-solid fa-magnifying-glass-minus"></i>
+            </button>
+
+            <span id="zoomLevel">100%</span>
+
+            <button id="btnZoomIn" title="Zoom In" class="icon-btn">
+                <i class="fa-solid fa-magnifying-glass-plus"></i>
+            </button>
+
+            <button id="btnFitWidth" title="Fit to Width" class="icon-btn">
+                <i class="fa-solid fa-maximize"></i>
+            </button>
+        </div>
+        <div class="toolbar-center">
+            <span id="pageInfo">Page 1 / 1</span>
+        </div>
+
+        <div class="toolbar-right">
+            <button onclick="toggleFullscreen()" title="Fullscreen" class="icon-btn">
+                <i class="fa-solid fa-expand"></i>
+            </button>
+        </div>
+    </div>
+
+</div>
+
+
+
+<!-- REQUEST MODAL (HIDDEN BY DEFAULT) -->
+<div id="requestModal" class="modal">
+
+    <div class="modal-content small">
+
+        <!-- HEADER -->
+        <div class="modal-header">
+            <h3>Request Document</h3>
+
+            <button onclick="closeRequest()" class="close" aria-label="Close modal">
+                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <path d="M18 6L6 18M6 6l12 12"
+                        stroke="currentColor"
+                        stroke-width="2.5"
+                        stroke-linecap="round"/>
+                </svg>
+            </button>
+        </div>
+        <!-- DESCRIPTION -->
+        <p id="requestText" class="modal-subtext">
+            Choose how you want to receive it
+        </p>
+
+        <!-- =====================
+             SECONDARY ACTIONS
+        ====================== -->
+        <div class="modal-actions">
+
+            <button class="btn whatsapp" onclick="sendWhatsApp()">
+                <svg viewBox="0 0 32 32" class="icon" aria-hidden="true">
+                    <path d="M19.11 17.53c-.28-.14-1.6-.79-1.85-.88-.25-.09-.43-.14-.61.14-.18.28-.7.88-.86 1.06-.16.18-.32.2-.6.07-.28-.14-1.18-.43-2.25-1.38-.83-.74-1.39-1.65-1.55-1.93-.16-.28-.02-.43.12-.57.12-.12.28-.32.42-.48.14-.16.18-.28.28-.46.09-.18.05-.34-.02-.48-.07-.14-.61-1.47-.84-2.01-.22-.53-.45-.46-.61-.47h-.52c-.18 0-.48.07-.73.34-.25.28-.95.93-.95 2.26s.98 2.62 1.12 2.8c.14.18 1.92 2.93 4.66 4.11.65.28 1.16.45 1.56.58.65.21 1.24.18 1.71.11.52-.08 1.6-.65 1.83-1.28.23-.63.23-1.18.16-1.28-.07-.11-.25-.18-.53-.32z"/>
+                </svg>
+                WhatsApp
+            </button>
+
+            <button class="btn email" onclick="sendEmail()">
+                <svg viewBox="0 0 24 24" class="icon" aria-hidden="true">
+                    <path d="M20 4H4c-1.1 0-2 .9-2 2v12c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4-8 5-8-5V6l8 5 8-5v2z"/>
+                </svg>
+                Email
+            </button>
+
+        </div>
+
+
+        <!-- =====================
+             PORTFOLIO OPTIONS
+        ====================== -->
+        <div id="portfolioOptions" class="portfolio-options">
+
+            <p class="modal-subtext small" id="portfolioLabel">
+                Select Portfolio Type(s):
+            </p>
+
+            <div class="portfolio-checkboxes" id="portfolioList">
+
+                <label>
+                    <input type="checkbox" value="Architectural">
+                    Architectural
+                </label>
+
+                <label>
+                    <input type="checkbox" value="Structural">
+                    Structural
+                </label>
+
+                <label>
+                    <input type="checkbox" value="Quantity Survey">
+                    Quantity Survey
+                </label>
+
+            </div>
+
+        </div>
+
+        <!-- =====================
+             PRIMARY ACTIONS
+        ====================== -->
+        <div class="modal-primary-actions">
+
+            <button class="btn email" onclick="viewSelectedPortfolio()" id="viewBtn" style="display:none;">
+                View Selected
+            </button>
+
+            <button class="btn download" onclick="downloadDocument()" id="downloadBtn" style="display:none;">
+                Download Selected
+            </button>
+
+        </div>
+
+    </div>
+
+</div>
+
+
+
+
+
+<!--3. ✅ NEW PROJECT FORM MODAL-->
+<!-- PROJECT MODAL -->
+<div id="projectModal" class="modal">
+
+    <div class="modal-content">
+
+        <h2>Project Intake</h2>
+        <p>Tell us about your project so we can assist you better.</p>
+
+        <!-- CLIENT DETAILS -->
+        <input type="text" id="clientName" placeholder="Your Name">
+        <input type="text" id="clientPhone" placeholder="Phone / WhatsApp">
+        <input type="email" id="clientEmail" placeholder="Email (optional)">
+
+        <!-- PROJECT TYPE -->
+        <select id="projectType" onchange="toggleOtherProjectType()">
+            <option value="">Select Project Type</option>
+            <option>Residential Building</option>
+            <option>Commercial Building</option>
+            <option>Renovation</option>
+            <option value="Other">Other</option>
+        </select>
+
+        <!-- OTHER PROJECT TYPE -->
+        <input
+            type="text"
+            id="otherProjectType"
+            placeholder="Specify project type"
+            style="display:none;"
+        >
+
+        <!-- PROJECT DESCRIPTION -->
+        <textarea id="projectDescription" placeholder="Describe your project..."></textarea>
+
+        <!-- GLOBAL CURRENCY (ONE TIME ONLY) -->
+        <label>Preferred Currency</label>
+        <select id="projectCurrency">
+            <option value="KES">KES</option>
+            <option value="USD">USD</option>
+            <option value="EUR">EUR</option>
+        </select>
+        <!-- SERVICES -->
+<!-- SERVICES -->
+<label>Services Needed</label>
+
+<div class="checkbox-group">
+
+    <!-- ARCHITECTURAL -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Architectural Design">
+        <span class="service-name">Architectural Design</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- STRUCTURAL -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Structural Design">
+        <span class="service-name">Structural Design</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- QUANTITY SURVEYING -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Quantity Surveying">
+        <span class="service-name">Quantity Surveying</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- SITE SUPERVISION -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Site Supervision">
+        <span class="service-name">Site Supervision</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- PROJECT MANAGEMENT -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Project Management">
+        <span class="service-name">Project Management</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- CONSTRUCTION WORKS -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Construction Works">
+        <span class="service-name">Construction / Building Works</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- CONSULTANCY -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Consultancy">
+        <span class="service-name">Consultancy / Advisory</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- INTERIOR DESIGN -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Interior Design">
+        <span class="service-name">Interior Design</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- FEASIBILITY STUDY -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Feasibility Study">
+        <span class="service-name">Feasibility Study</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+    <!-- SITE INSPECTION -->
+    <div class="service-row" onclick="toggleServiceCheckbox(this, event)">
+        <input type="checkbox" value="Site Inspection">
+        <span class="service-name">Site Inspection / Reporting</span>
+        <input type="number" class="budget-input" placeholder="Min">
+        <input type="number" class="budget-input" placeholder="Max">
+    </div>
+
+</div>
+
+        <!-- ACTIONS -->
+        <div class="modal-actions">
+            <button onclick="submitProject('whatsapp')">Send via WhatsApp</button>
+            <button onclick="submitProject('email')">Send via Email</button>
+            <button onclick="closeProjectForm()">Cancel</button>
+        </div>
+
+    </div>
+
+</div>
+
+
+<!-- =====================
+     FOOTER
+===================== -->
+<footer class="footer" id="contact">
+
+    <div class="footer-container">
+
+        <!-- ABOUT -->
+        <div class="footer-box">
+            <h3>FrankTech Civil</h3>
+
+            <p>
+                Project Manager | Civil Engineer | Structural Engineer | Site Engineer |
+                Architectural Designer | Quantity Surveyor
+            </p>
+
+            <p>
+                Data-driven engineering solutions focused on design, construction, and project delivery.
+            </p>
+        </div>
+
+        <!-- QUICK LINKS -->
+        <div class="footer-box">
+            <h3>Quick Links</h3>
+            <ul>
+                <li><a href="#summary">Professional Summary</a></li>
+                <li><a href="#skills">Software Skills</a></li>
+                <li><a href="#architecture">Architectural Designs</a></li>
+                <li><a href="#structural">Structural Engineering</a></li>
+                <li><a href="#civil">Site Supervision</a></li>
+                <li><a href="#projects">Project Portfolio</a></li>
+            </ul>
+        </div>
+
+
+        <!-- PORTFOLIO & Resume -->
+        <div class="footer-box">
+            <h3>Portfolio & Resume</h3>
+
+            <!-- PORTFOLIO ROW -->
+            <div class="doc-row">
+
+                <span class="doc-title">Portfolio</span>
+
+                <button class="mini-btn" onclick="requestDocument('Portfolio View')">
+                    View
+                </button>
+
+            </div>
+
+            <!-- Resume ROW -->
+            <div class="doc-row">
+
+                <span class="doc-title">Resume</span>
+
+                <button class="mini-btn" onclick="openResume()">
+                    View
+                </button>
+
+            </div>
+
+        </div>
+
+
+        <!-- PROJECT CTA (FOOTER) -->
+        <div class="footer-box footer-cta">
+
+            <h3>Have a Project?</h3>
+
+            <p class="footer-cta-text">
+                Let’s build something great together.
+            </p>
+
+            <button class="footer-cta-btn" onclick="openProjectModal()">
+                Get Started
+            </button>
+
+        </div>
+
+        <!-- CONTACT -->
+        <div class="footer-box">
+            <h3>Contact</h3>
+
+            <p><strong>Email:</strong> <a href="mailto:ambetsafrankline@gmail.com">ambetsafrankline@gmail.com</a></p>
+
+            <p><strong>Phone:</strong> <a href="tel:+254716770021">+254 716 770021</a></p>
+
+            <p><strong>Location:</strong> Nairobi, Kenya</p>
+
+            <p>
+                <strong>LinkedIn:</strong>
+                <a href="https://linkedin.com/in/ambetsa-frankline" target="_blank">
+                    linkedin.com/in/ambetsa-frankline
+                </a>
+            </p>
+        </div>
+
+    </div>
+
+    <!-- BOTTOM -->
+    <div class="footer-bottom">
+        <p>© 2026 Frankline Ambetsa | Civil Engineering Portfolio</p>
+    </div>
+
+</footer>
+
+
+<script src="script.js"></script>
+<script src="PDF.js"></script>
+<script src="image_viewer.js"></script>
+
+</body>
+</html>

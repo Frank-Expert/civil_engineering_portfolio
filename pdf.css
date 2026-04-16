@@ -1,0 +1,900 @@
+
+
+
+
+/* =====================
+   PDF MODAL ROOT
+===================== */
+.pdf-modal {
+    position: fixed;
+    inset: 0;
+    background: #1e1e1e;
+    display: none;
+    flex-direction: column; /* IMPORTANT */
+    height: 100vh;
+    z-index: 99999;
+    overflow: hidden;
+    font-family: Arial, sans-serif;
+}
+
+/* =====================
+   TOP BAR (SEARCH + TITLE AREA)
+===================== */
+.pdf-topbar {
+    height: 55px;
+    background: #2b2b2b;
+    color: #fff;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 12px;
+    flex-shrink: 0;
+}
+
+.pdf-left,
+.pdf-right {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.pdf-title {
+    font-weight: bold;
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+#searchInput {
+    height: 30px;
+    width: 160px;
+    font-size: 12px;
+    padding: 0 8px;
+    border-radius: 6px;
+    border: none;
+    outline: none;
+    background: #444;
+    color: #fff;
+}
+
+#searchInput::placeholder {
+    color: #aaa;
+}
+
+.pdf-topbar button {
+    background: #3a3a3a;
+    color: #fff;
+    border: none;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.pdf-topbar button:hover {
+    background: #555;
+}
+
+/* Close button */
+.pdf-close {
+    margin-left: auto;
+
+    width: 36px;
+    height: 36px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    background: #e60000 !important;
+    color: #fff;
+    border: none;
+    border-radius: 8px;
+
+    cursor: pointer;
+    font-weight: bold;
+
+    transition: 0.2s ease;
+}
+
+.pdf-close i {
+    color: #fff;
+}
+
+.pdf-close:hover {
+    background: #ff1a1a;
+    transform: scale(1.05);
+}
+
+
+
+
+/* =====================
+   VIEWER
+===================== */
+.pdf-viewer {
+    flex: 1;
+    overflow-y: auto;
+    overflow: auto; /* instead of only overflow-y */
+    display: flex;
+    justify-content: center;
+
+    /* ✅ unified padding */
+    padding: 10px 10px;
+
+    box-sizing: border-box;
+    min-width: 0;
+
+    /* ✅ stable height */
+    height: calc(100vh - 110px);
+
+    transition: all 0.25s ease;
+}
+.pdf-viewer {
+    will-change: transform;
+    -webkit-overflow-scrolling: touch;
+}
+
+.pdf-modal.sidebar-hidden .page,
+.pdf-modal.true-fullscreen .page {
+    justify-content: stretch;
+}
+
+
+
+#pdfContainer {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start; /* 🔥 KEY FIX */
+    gap: 20px;
+}
+
+
+.page {
+    display: flex;
+    justify-content: center;
+    width: auto;           /* 🔥 allow zoom to actually resize */
+    box-sizing: border-box;
+}
+
+
+#pdfContainer canvas {
+    background: #fff;
+    border-radius: 6px;
+    box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+}
+
+/* =====================
+   MOBILE (<= 480px)
+===================== */
+@media (max-width: 480px) {
+
+    /* TOP BAR */
+    .pdf-topbar {
+        height: 48px;
+        padding: 0 8px;
+    }
+
+    .pdf-title {
+        font-size: 11px;
+        max-width: 90px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #searchInput {
+        width: 110px;
+        height: 28px;
+        font-size: 11px;
+        padding: 0 6px;
+    }
+
+    .pdf-topbar button {
+        padding: 4px 6px;
+        font-size: 11px;
+        border-radius: 5px;
+    }
+
+    .pdf-close {
+        padding: 4px 8px !important;
+    }
+
+    /* VIEWER */
+    .pdf-viewer {
+        padding: 6px;
+        height: calc(100vh - 96px);
+    }
+
+    #pdfContainer {
+        gap: 12px;
+    }
+
+    .page {
+        width: 100%;
+        justify-content: center;
+    }
+
+    #pdfContainer canvas {
+        max-width: 100%;
+        height: auto;
+    }
+}
+
+
+/* =====================
+   TABLET (481px - 1024px)
+===================== */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+    /* TOP BAR */
+    .pdf-topbar {
+        height: 52px;
+        padding: 0 10px;
+    }
+
+    .pdf-title {
+        font-size: 12px;
+        max-width: 140px;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        white-space: nowrap;
+    }
+
+    #searchInput {
+        width: 140px;
+        height: 30px;
+        font-size: 12px;
+    }
+
+    .pdf-topbar button {
+        font-size: 12px;
+        padding: 5px 7px;
+    }
+
+    /* VIEWER */
+    .pdf-viewer {
+        padding: 8px;
+        height: calc(100vh - 104px);
+    }
+
+    #pdfContainer {
+        gap: 16px;
+    }
+
+    .page {
+        width: 100%;
+    }
+
+    #pdfContainer canvas {
+        max-width: 100%;
+    }
+}
+
+
+
+/* =====================
+   TOOLBAR (BOTTOM CONTROLS)
+===================== */
+.pdf-toolbar {
+    height: 55px;
+    background: #2b2b2b;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    padding: 0 15px;
+    color: #fff;
+    flex-shrink: 0;
+    font-size: 12px;
+}
+
+/* LEFT CONTROLS */
+.toolbar-left {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.toolbar-left button {
+    background: #3a3a3a;
+    border: none;
+    color: #fff;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.toolbar-left button:hover {
+    background: #555;
+}
+
+/* ZOOM DISPLAY */
+#zoomLevel {
+    min-width: 55px;
+    text-align: center;
+    color: #ddd;
+    font-size: 12px;
+}
+
+/* CENTER PAGE INFO */
+.toolbar-center {
+    justify-self: center;
+}
+
+#pageInfo {
+    font-size: 12px;
+    font-weight: 600;
+    color: #ddd;
+}
+
+/* RIGHT CONTROLS */
+.toolbar-right {
+    justify-self: end;
+}
+
+.toolbar-right button {
+    background: #3a3a3a;
+    border: none;
+    color: #fff;
+    padding: 5px 8px;
+    font-size: 12px;
+    border-radius: 6px;
+    cursor: pointer;
+}
+
+.toolbar-right button:hover {
+    background: #555;
+}
+
+/* =====================
+   SCROLLBAR
+===================== */
+.pdf-viewer::-webkit-scrollbar {
+    width: 8px;
+}
+
+.pdf-viewer::-webkit-scrollbar-thumb {
+    background: #555;
+    border-radius: 6px;
+}
+
+.pdf-viewer::-webkit-scrollbar-thumb:hover {
+    background: #777;
+}
+
+
+/* =====================
+   MOBILE (<= 480px)
+===================== */
+@media (max-width: 480px) {
+
+    .pdf-toolbar {
+        height: 48px;
+        padding: 0 8px;
+        font-size: 11px;
+
+        /* keep structure but tighter spacing */
+        grid-template-columns: auto 1fr auto;
+    }
+
+    /* LEFT BUTTONS */
+    .toolbar-left {
+        gap: 4px;
+    }
+
+    .toolbar-left button,
+    .toolbar-right button {
+        padding: 4px 6px;
+        font-size: 11px;
+        border-radius: 5px;
+    }
+
+    /* ZOOM */
+    #zoomLevel {
+        min-width: 45px;
+        font-size: 11px;
+    }
+
+    /* PAGE INFO */
+    #pageInfo {
+        font-size: 11px;
+    }
+
+    /* prevent crowding */
+    .toolbar-center {
+        padding: 0 4px;
+        text-align: center;
+    }
+
+    /* scrollbar thinner for mobile */
+    .pdf-viewer::-webkit-scrollbar {
+        width: 5px;
+    }
+}
+
+
+/* =====================
+   TABLET (481px - 1024px)
+===================== */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+    .pdf-toolbar {
+        height: 52px;
+        padding: 0 12px;
+        font-size: 12px;
+        grid-template-columns: 1fr auto 1fr;
+    }
+
+    .toolbar-left {
+        gap: 6px;
+    }
+
+    .toolbar-left button,
+    .toolbar-right button {
+        padding: 5px 7px;
+        font-size: 12px;
+    }
+
+    #zoomLevel {
+        min-width: 50px;
+    }
+
+    #pageInfo {
+        font-size: 12px;
+    }
+}
+
+
+/* =========================
+   BODY LAYOUT
+========================= */
+.pdf-body {
+    flex: 1;
+    display: flex;
+    overflow: hidden;
+    position: relative;
+}
+
+/* =========================
+   SIDEBAR (THUMBNAILS)
+========================= */
+.pdf-sidebar {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+
+    background: #1a1a1a;
+    overflow-y: auto;
+    overflow-x: hidden;
+
+    border-right: 1px solid #333;
+
+    transition: width 0.25s ease, min-width 0.25s ease;
+    scrollbar-width: none;
+}
+
+.pdf-sidebar::-webkit-scrollbar {
+    width: 0;
+}
+
+/* COLLAPSED STATE */
+.pdf-modal.sidebar-hidden .pdf-sidebar {
+    width: 0;
+    min-width: 0;
+    overflow: hidden;
+    border: none;
+    padding: 0;
+}
+
+/* =========================
+   SIDEBAR TOGGLE
+========================= */
+.pdf-sidebar-toggle {
+    position: absolute;
+    top: 10px;
+    left: 10px;
+    z-index: 20;
+
+    background: #2b2b2b;
+    border: none;
+    color: white;
+
+    padding: 8px 10px;
+    border-radius: 8px;
+
+    cursor: pointer;
+    user-select: none;
+}
+
+.pdf-sidebar-toggle:hover {
+    background: #444;
+}
+
+.pdf-sidebar-toggle i {
+    pointer-events: none;
+}
+
+/* =========================
+   THUMBNAILS
+========================= */
+.pdf-thumb {
+    position: relative;
+    margin-bottom: 10px;
+
+    cursor: pointer;
+    border-radius: 6px;
+    overflow: hidden;
+
+    border: 2px solid transparent;
+    transition: 0.2s;
+}
+
+.pdf-thumb:hover {
+    transform: scale(1.03);
+}
+
+.pdf-thumb canvas {
+    width: 100%;
+    display: block;
+}
+
+.pdf-thumb span {
+    position: absolute;
+    bottom: 3px;
+    right: 5px;
+
+    font-size: 10px;
+    color: #fff;
+
+    background: rgba(0,0,0,0.5);
+    padding: 2px 4px;
+    border-radius: 4px;
+}
+
+.pdf-thumb.active {
+    border-color: #38bdf8;
+}
+
+/* =========================
+   MOBILE (<= 480px)
+========================= */
+@media (max-width: 480px) {
+
+    /* SIDEBAR becomes overlay-feel */
+    .pdf-sidebar {
+        width: 110px;
+        min-width: 110px;
+        max-width: 110px;
+    }
+
+    .pdf-modal.sidebar-hidden .pdf-sidebar {
+        width: 0;
+        min-width: 0;
+    }
+
+    /* toggle button smaller */
+    .pdf-sidebar-toggle {
+        padding: 6px 8px;
+        border-radius: 6px;
+        top: 8px;
+        left: 8px;
+    }
+
+    /* thumbnails tighter */
+    .pdf-thumb {
+        margin-bottom: 6px;
+        border-radius: 5px;
+    }
+
+    .pdf-thumb span {
+        font-size: 9px;
+        padding: 1px 3px;
+    }
+}
+
+
+/* =========================
+   TABLET (481px - 1024px)
+========================= */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+    .pdf-sidebar {
+        width: 130px;
+        min-width: 130px;
+        max-width: 130px;
+    }
+
+    .pdf-thumb {
+        margin-bottom: 8px;
+    }
+
+    .pdf-sidebar-toggle {
+        padding: 7px 9px;
+    }
+}
+
+
+/* =========================
+   SWEETALERT GLOBAL LAYER FIX
+========================= */
+.swal2-container {
+    z-index: 1000000 !important;
+    backdrop-filter: blur(6px);
+}
+
+/* =========================
+   SWEETALERT POPUP CARD
+========================= */
+.swal2-popup {
+    background: #1f1f1f !important;
+    color: #fff !important;
+
+    border-radius: 14px !important;
+    padding: 22px 18px !important;
+
+    width: 340px !important;
+    max-width: 90vw !important;
+
+    box-shadow: 0 20px 60px rgba(0,0,0,0.6) !important;
+    border: 1px solid rgba(255,255,255,0.08);
+
+    animation: swalPop 0.25s ease-out;
+}
+
+/* animation */
+@keyframes swalPop {
+    from { transform: scale(0.92); opacity: 0; }
+    to { transform: scale(1); opacity: 1; }
+}
+
+/* =========================
+   TITLE
+========================= */
+.swal2-title {
+    font-size: 16px !important;
+    font-weight: 600 !important;
+    margin-bottom: 10px !important;
+}
+
+/* =========================
+   TEXT
+========================= */
+.swal2-html-container {
+    font-size: 13px !important;
+    color: #cfcfcf !important;
+    line-height: 1.4;
+    margin-top: 6px !important;
+}
+
+/* =========================
+   LOADER
+========================= */
+.swal2-loader {
+    border-color: #0a66ff transparent #0a66ff transparent !important;
+}
+
+/* =========================
+   CUSTOM LOADER
+========================= */
+.loader {
+    width: 42px;
+    height: 42px;
+    border: 3px solid rgba(255,255,255,0.15);
+    border-top: 3px solid #0a66ff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+    margin: 10px auto;
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* =========================
+   SUCCESS ICON
+========================= */
+.swal2-icon.swal2-success {
+    border-color: #22c55e !important;
+}
+
+.swal2-success-ring {
+    border: 4px solid rgba(34,197,94,0.3) !important;
+}
+
+.swal2-success-line-tip,
+.swal2-success-line-long {
+    background-color: #22c55e !important;
+}
+
+/* =========================
+   ERROR ICON
+========================= */
+.swal2-icon.swal2-error {
+    border-color: #ef4444 !important;
+}
+
+.swal2-x-mark-line-left,
+.swal2-x-mark-line-right {
+    background-color: #ef4444 !important;
+}
+
+/* =========================
+   CONFIRM BUTTON
+========================= */
+.swal2-confirm {
+    background: #0a66ff !important;
+    border-radius: 8px !important;
+    font-size: 13px !important;
+    padding: 8px 14px !important;
+}
+
+.swal2-confirm:focus {
+    box-shadow: none !important;
+}
+
+/* =========================
+   BACKDROP
+========================= */
+.swal2-backdrop-show {
+    background: rgba(0, 0, 0, 0.65) !important;
+}
+
+
+/* =========================
+   MOBILE (<= 480px)
+========================= */
+@media (max-width: 480px) {
+
+    .swal2-popup {
+        width: 92vw !important;
+        padding: 16px 14px !important;
+        border-radius: 12px !important;
+    }
+
+    .swal2-title {
+        font-size: 14px !important;
+        margin-bottom: 8px !important;
+    }
+
+    .swal2-html-container {
+        font-size: 12px !important;
+    }
+
+    .swal2-confirm {
+        font-size: 12px !important;
+        padding: 7px 12px !important;
+    }
+
+    .loader {
+        width: 36px;
+        height: 36px;
+    }
+}
+
+
+/* =========================
+   TABLET (481px - 1024px)
+========================= */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+    .swal2-popup {
+        width: 360px !important;
+        padding: 20px 16px !important;
+    }
+
+    .swal2-title {
+        font-size: 15px !important;
+    }
+
+    .swal2-html-container {
+        font-size: 13px !important;
+    }
+}
+
+
+
+/* =====================
+   ICON BUTTON
+===================== */
+.icon-btn {
+    background: transparent;
+    border: none;
+    cursor: pointer;
+
+    font-size: 16px;
+    padding: 8px;
+
+    border-radius: 6px;
+    transition: 0.2s ease;
+
+    color: #333;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.icon-btn:hover {
+    background: rgba(0,0,0,0.08);
+}
+
+/* danger variant */
+.icon-btn.danger {
+    color: #e74c3c;
+}
+
+.icon-btn.danger:hover {
+    background: rgba(231,76,60,0.12);
+}
+
+/* =====================
+   FULLSCREEN MODE
+===================== */
+
+/* TRUE FULLSCREEN */
+.pdf-modal.true-fullscreen .pdf-viewer {
+    padding: 0 !important;
+}
+
+.pdf-modal.true-fullscreen #pdfContainer {
+    gap: 10px;
+}
+
+/* SIDEBAR HIDDEN MODE */
+.pdf-modal.sidebar-hidden .pdf-viewer {
+    padding-left: 0;
+    padding-right: 0;
+}
+
+
+
+
+/* =====================
+   MOBILE (<= 480px)
+===================== */
+@media (max-width: 480px) {
+
+    .icon-btn {
+        font-size: 14px;
+        padding: 6px;
+        border-radius: 6px;
+
+        /* better touch behavior */
+        min-width: 34px;
+        min-height: 34px;
+    }
+
+    /* fullscreen adjustments */
+    .pdf-modal.true-fullscreen #pdfContainer {
+        gap: 6px;
+    }
+
+    .pdf-modal.sidebar-hidden .pdf-viewer {
+        padding-left: 6px;
+        padding-right: 6px;
+    }
+}
+
+
+/* =====================
+   TABLET (481px - 1024px)
+===================== */
+@media (min-width: 481px) and (max-width: 1024px) {
+
+    .icon-btn {
+        font-size: 15px;
+        padding: 7px;
+    }
+
+    .pdf-modal.true-fullscreen #pdfContainer {
+        gap: 8px;
+    }
+
+    .pdf-modal.sidebar-hidden .pdf-viewer {
+        padding-left: 4px;
+        padding-right: 4px;
+    }
+}
+
+
+
+
