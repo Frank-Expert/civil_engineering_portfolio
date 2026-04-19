@@ -11,13 +11,7 @@ let lastRenderSrc = null;
 let fitMode = "auto"; // auto | width | height | fill
 
 
-(() => {
-
-let resizeTimeout;
-// all image viewer code here...
-
-})();
-
+let imageResizeTimeout = null;
 /* =====================
    OPEN IMAGE
 ===================== */
@@ -198,9 +192,9 @@ function renderWatermarkedImage(src) {
 
 
 window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
+    clearTimeout(imageResizeTimeout);
 
-    resizeTimeout = setTimeout(() => {
+    imageResizeTimeout = setTimeout(() => {
         const canvas = document.getElementById("modalCanvas");
 
         if (canvas && canvas.width) {
@@ -328,15 +322,19 @@ function downloadImage() {
     link.click();
 }
 
+
+
+
 /* =====================
-   CLOSE
+   CLOSE IMAGE MODAL (MERGED + FIXED)
 ===================== */
 function closeImage() {
     const modal = document.getElementById("imgModal");
-
+    if (!modal) return;
     modal.style.display = "none";
-    document.body.style.overflow = ""; // restore scroll
+    document.body.style.overflow = "";
 }
+
 
 
 function buildPreviewBar() {

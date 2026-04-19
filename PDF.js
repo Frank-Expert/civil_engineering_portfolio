@@ -5,32 +5,30 @@ pdfjsLib.GlobalWorkerOptions.workerSrc =
     "https://cdnjs.cloudflare.com/ajax/libs/pdf.js/3.11.174/pdf.worker.min.js";
 
 
-let currentZoom = 1.0; // 100% default
 let currentFile = "";
-let renderTask = null;
-let renderId = 0;
-
+//let renderTask = null;
 let totalPages = 0;
 let currentPage = 1;
-let isFitMode = false;
 let pdfReady = false;
 let isRenderingPDF = false;
-let isZooming = false;
 let renderGeneration = 0;
 let pdfDoc = null;
-let lastTouchDistance = null;
-let scrollTick = false;
-let firstMatchFound = false;
 
 let pageObserver = null;
+let pdfCache = new Map();
+//let scrollFreeze = false;
+let scrollLock = false;
 
-
-(() => {
-
+let zoomMode = "fit"; 
 let resizeTimeout = null;
-// all PDF code here...
 
-})();
+
+
+let currentZoom = 1;
+let zoomLock = false;
+let isZooming = false;
+let lastTouchDistance = null;
+
 
 
 const WATERMARK_LINES = [
@@ -51,71 +49,109 @@ function setWatermark(text) {
     }
 }
 
-/* =====================
-   PDF MODAL
-===================== */
-function openPDF(file) {
+
+
+async function openPDF(file) {
     currentFile = file;
-    pdfReady = false; // reset state
+
     document.getElementById("pdfModal").style.display = "flex";
     lockScroll();
-    renderPDF(file);
+
+    pdfReady = false;
+    isRenderingPDF = true;
+
+    showRenderLoader();
+
+    try {
+
+        // =========================
+        // CACHE HIT
+        // =========================
+        if (pdfCache.has(file)) {
+            pdfDoc = pdfCache.get(file);
+            totalPages = pdfDoc.numPages;
+
+            renderPDF(pdfDoc);   // ONLY THIS
+            return;
+        }
+
+        // =========================
+        // LOAD PDF
+        // =========================
+        const loadingTask = pdfjsLib.getDocument({
+            url: file,
+            cMapUrl: "https://cdn.jsdelivr.net/npm/pdfjs-dist@3.11.174/cmaps/",
+            cMapPacked: true,
+            disableAutoFetch: false,
+            disableStream: false,
+            disableRange: false,
+        });
+
+        pdfDoc = await loadingTask.promise;
+
+        pdfCache.set(file, pdfDoc);
+        totalPages = pdfDoc.numPages;
+
+        renderPDF(pdfDoc);   // ONLY THIS
+
+    } catch (err) {
+
+        console.error(err);
+
+        Swal.fire({
+            icon: "error",
+            title: "Failed to open PDF",
+            text: "Document could not be loaded."
+        });
+
+    } finally {
+        isRenderingPDF = false;
+        Swal.close();
+    }
 }
 
-function getAvailableViewport() {
-    const viewer = document.querySelector(".pdf-viewer");
 
-    const sidebar = document.querySelector(".pdf-sidebar");
-    const sidebarHidden = document
-        .querySelector(".pdf-modal")
-        .classList.contains("sidebar-hidden");
+function renderPDF(pdf) {
+    const container = document.getElementById("pdfContainer");
+    container.innerHTML = "";
 
-    const sidebarWidth = (!sidebarHidden && sidebar) ? sidebar.offsetWidth : 0;
+    const currentRender = ++renderGeneration;
 
-    return {
-        width: viewer.clientWidth - sidebarWidth,
-        height: viewer.clientHeight
-    };
-}
+    pdfDoc = pdf;
+    totalPages = pdf.numPages;
 
+    // =========================
+    // CREATE PAGE SHELLS
+    // =========================
+    for (let i = 1; i <= totalPages; i++) {
 
-function detectPaperZoom(page) {
-    const viewport = page.getViewport({ scale: 1 });
+        const pageDiv = document.createElement("div");
+        pageDiv.className = "page";
+        pageDiv.dataset.page = i;
 
-    const { width: vw, height: vh } = getAvailableViewport();
+        pageDiv.dataset.rendered = "0";
+        pageDiv.dataset.rendering = "0";
 
-    const scaleX = vw / viewport.width;
-    const scaleY = vh / viewport.height;
-
-    const ratio = viewport.height / viewport.width;
-
-    let scale;
-
-    // 🔥 DETECT PAGE TYPE USING SHAPE
-
-    if (ratio > 1.2) {
-        // ✅ TALL PAGES (A4, Letter, A3 portrait)
-        // → fit height like Adobe
-        scale = scaleY;
-
-    } else if (ratio < 0.8) {
-        // ✅ WIDE / SHORT (PPT slides, landscape)
-        // → fit width to avoid huge vertical gaps
-        scale = scaleX;
-
-    } else {
-        // ✅ NORMAL / BALANCED (square-ish, mixed docs)
-        // → safe fallback
-        scale = Math.min(scaleX, scaleY);
+        container.appendChild(pageDiv);
     }
 
-    // 🔒 SAFETY CLAMP (important)
-    scale = Math.min(scale, 1.2);
-    scale = Math.max(scale, 0.6);
+    // =========================
+    // 🔥 SIDEBAR NOW OWNED HERE (OPTION 1)
+    // =========================
+    buildSidebar(pdf);
 
-    return scale;
+    // =========================
+    // OBSERVER
+    // =========================
+    requestAnimationFrame(() => {
+        initPageObserver();
+    });
+
+    // =========================
+    // UI READY
+    // =========================
+    updateZoomUI();
 }
-
 
 
 const renderedCache = new Map();
@@ -133,125 +169,91 @@ function showRenderLoader() {
     });
 }
 
-function renderPDF(file) {
-    const container = document.getElementById("pdfContainer");
-    container.innerHTML = "";
 
-    const currentRender = ++renderId;
 
-    isRenderingPDF = true;
-    showRenderLoader();
+//Add cache limit + eviction
+const MAX_CACHE_SIZE = 20; // tweak (10–30 ideal)
 
-    pdfjsLib.getDocument(file).promise
-        .then(pdf => {
-
-            if (currentRender !== renderId) return;
-
-            pdfDoc = pdf;
-            totalPages = pdf.numPages;
-
-            setTimeout(() => buildSidebar(pdf), 0);
-
-            for (let i = 1; i <= totalPages; i++) {
-                const text = document.getElementById("progress-text");
-                if (text) text.innerText = `Loading ${i} / ${totalPages}`;
-
-                const pageDiv = document.createElement("div");
-                pageDiv.className = "page";
-                pageDiv.dataset.page = i;
-
-                pageDiv.style.display = "flex";
-                pageDiv.style.justifyContent = "center";
-                pageDiv.style.alignItems = "center";
-
-                container.appendChild(pageDiv);
-            }
-
-            setTimeout(() => initPageObserver(), 0);
-
-            return pdf.getPage(1);
-        })
-        .then(page => {
-
-            if (!page) return;
-
-            currentZoom = detectPaperZoom(page);
-            updateZoomUI();
-
-            rerenderVisiblePages(true);
-
-            isRenderingPDF = false;
-
-            Swal.close(); // ✅ CLOSE ALWAYS HERE
-        })
-        .catch(err => {
-            console.error(err);
-
-            Swal.fire({
-                icon: "error",
-                title: "Failed to open PDF",
-                text: "Something went wrong."
-            });
-        });
-        //document.querySelectorAll(".page").forEach(p => pageObserver.observe(p));
+function setCache(key, bitmap) {
+    if (renderedCache.size >= MAX_CACHE_SIZE) {
+        const firstKey = renderedCache.keys().next().value;
+        renderedCache.delete(firstKey);
+    }
+    renderedCache.set(key, bitmap);
 }
 
 
 
-function observePages() {
-    const pages = document.querySelectorAll(".page");
-
-    const observer = new IntersectionObserver(entries => {
-
-        if (isZooming) return; // good
-
-        entries.forEach(entry => {
-            if (!entry.isIntersecting) return;
-
-            const pageNum = parseInt(entry.target.dataset.page);
-            renderPage(pageNum, entry.target);
-        });
-
-    }, {
-        root: document.querySelector(".pdf-viewer"),
-        threshold: 0.1
-    });
-
-    pages.forEach(p => observer.observe(p));
-}
-
-
-
-
+let activeRenders = 0;
+const MAX_PARALLEL_RENDERS = 3;
 
 
 function renderPage(pageNum, container) {
 
-    // 🔥 ignore outdated renders
+    if (!pdfDoc || !container) return;
+
+    const zoom = currentZoom;
     const myGeneration = renderGeneration;
-    container.dataset.rendering = "1";
 
-    const cacheKey = `${pageNum}-${currentZoom}`;
-
-    // ⚡ CACHE HIT
-    if (renderedCache.has(cacheKey)) {
-        const cached = renderedCache.get(cacheKey);
-
-        container.innerHTML = "";
-        container.appendChild(cached.cloneNode(true));
-
+    if (activeRenders >= MAX_PARALLEL_RENDERS) {
         container.dataset.rendering = "0";
         return;
     }
+    activeRenders++;
 
-    pdfDoc.getPage(pageNum).then(page => {
+    // =========================
+    // CANCEL OLD RENDER
+    // =========================
+    if (container._renderTask) {
+        try { container._renderTask.cancel(); } catch (e) {}
+    }
 
-        // 🔥 if zoom changed mid-render → cancel
+    // prevent duplicate work
+    if (
+        container.dataset.rendered === "1" ||
+        container.dataset.rendering === "1"
+    ) {
+        return;
+    }
+
+    container.dataset.rendering = "1";
+
+    const cacheKey = `${pageNum}-${zoom}`;
+
+    // =========================
+    // ⚡ CACHE HIT
+    // =========================
+    if (renderedCache.has(cacheKey)) {
+
+        const bitmap = renderedCache.get(cacheKey);
+
+        const canvas = document.createElement("canvas");
+        const ctx = canvas.getContext("2d");
+
+        canvas.width = bitmap.width;
+        canvas.height = bitmap.height;
+
+        ctx.drawImage(bitmap, 0, 0);
+
+        container.replaceChildren(canvas);
+
+        container.dataset.rendering = "0";
+        container.dataset.rendered = "1";
+
+        return;
+    }
+
+    // =========================
+    // 📥 LOAD PAGE
+    // =========================
+    pdfDoc.getPage(pageNum).then(async (page) => {
+
         if (myGeneration !== renderGeneration) return;
+        if (!document.body.contains(container)) return;
 
-        const viewport = page.getViewport({ scale: currentZoom });
+        const viewport = page.getViewport({ scale: zoom });
 
-        const DPR = window.devicePixelRatio || 2;
+        const DPR = Math.min(window.devicePixelRatio || 1, 2);
 
         const canvas = document.createElement("canvas");
         const ctx = canvas.getContext("2d");
@@ -262,39 +264,81 @@ function renderPage(pageNum, container) {
         canvas.style.width = viewport.width + "px";
         canvas.style.height = viewport.height + "px";
 
-        canvas.style.display = "block";
-        canvas.style.opacity = "0";
-
         ctx.scale(DPR, DPR);
 
-        container.innerHTML = "";
-        container.appendChild(canvas);
+        container.replaceChildren(canvas);
 
-        page.render({
+        const renderTask = page.render({
             canvasContext: ctx,
             viewport
-        }).promise.then(() => {
+        });
 
-            // 🔥 still valid render?
+        container._renderTask = renderTask;
+
+        try {
+            await renderTask.promise;
+
             if (myGeneration !== renderGeneration) return;
+            if (!document.body.contains(container)) return;
 
-            if (typeof drawWatermark === "function") {
-                drawWatermark(ctx, canvas);
+            // =========================
+            // 💧 WATERMARK
+            // =========================
+            drawWatermark(ctx, canvas);
+
+            // =========================
+            // 💾 CACHE
+            // =========================
+            const bitmap = await createImageBitmap(canvas);
+            setCache(cacheKey, bitmap);
+
+            container.dataset.rendering = "0";
+            container.dataset.rendered = "1";
+
+            // =========================
+            // 🚀 PRELOAD NEXT + PREV
+            // =========================
+            const next = pageNum + 1;
+            const prev = pageNum - 1;
+
+            if (next <= totalPages) {
+                const nextContainer = document.querySelector(
+                    `.page[data-page="${next}"]`
+                );
+
+                if (
+                    nextContainer &&
+                    nextContainer.dataset.rendered !== "1" &&
+                    nextContainer.dataset.rendering !== "1"
+                ) {
+                    renderPage(next, nextContainer);
+                }
             }
 
-            canvas.style.opacity = "1";
+            if (prev >= 1) {
+                const prevContainer = document.querySelector(
+                    `.page[data-page="${prev}"]`
+                );
 
-            const img = document.createElement("img");
-            img.src = canvas.toDataURL("image/png");
-            img.style.width = "100%";
+                if (
+                    prevContainer &&
+                    prevContainer.dataset.rendered !== "1" &&
+                    prevContainer.dataset.rendering !== "1"
+                ) {
+                    renderPage(prev, prevContainer);
+                }
+            }
 
-            renderedCache.set(cacheKey, img);
+        } catch (err) {
+
+            if (err?.name !== "RenderingCancelledException") {
+                console.warn("Render error:", err);
+            }
 
             container.dataset.rendering = "0";
+        }
 
-        }).catch(err => {
-            container.dataset.rendering = "0";
-        });
+        activeRenders--;
     });
 }
 
@@ -331,87 +375,91 @@ function drawWatermark(ctx, canvas) {
 }
 
 
-function searchPDF() {
-    const query = document.getElementById("searchInput").value.toLowerCase();
-    if (!query) return;
-
-    firstMatchFound = false;
-
-    const pages = document.querySelectorAll(".page");
-
-    pages.forEach((pageDiv, index) => {
-
-        pdfDoc.getPage(index + 1).then(page => {
-            page.getTextContent().then(textContent => {
-
-                const text = textContent.items.map(i => i.str).join(" ").toLowerCase();
-
-                if (text.includes(query)) {
-                    pageDiv.style.outline = "4px solid yellow";
-
-                    if (!firstMatchFound) {
-                        pageDiv.scrollIntoView({ behavior: "smooth" });
-                        firstMatchFound = true;
-                    }
-
-                } else {
-                    pageDiv.style.outline = "none";
-                }
-            });
-        });
-
-    });
-}
-
-
-
 
 
 function initPageObserver() {
 
-    if (pageObserver) pageObserver.disconnect();
+    // 🔥 always reset cleanly (prevents duplicate observers)
+    if (pageObserver) {
+        pageObserver.disconnect();
+    }
 
     const viewer = document.querySelector(".pdf-viewer");
 
     pageObserver = new IntersectionObserver((entries) => {
 
-        if (isZooming) return; // 🔥 freeze observer during zoom
+        // =========================
+        // GLOBAL SAFETY LOCKS
+        // =========================
+        
+        if (isZooming || isRenderingPDF || scrollLock) return;
+
+        let bestPage = currentPage;
+        let bestRatio = 0;
 
         for (const entry of entries) {
-
-            if (!entry.isIntersecting) continue;
 
             const pageNum = Number(entry.target.dataset.page);
             if (!pageNum) continue;
 
-            renderPage(pageNum, entry.target);
+            // =========================
+            // 1. LAZY RENDERING (ONLY ON VISIBILITY)
+            // =========================
+            if (
+                entry.isIntersecting &&
+                entry.target.dataset.rendered !== "1" &&
+                entry.target.dataset.rendering !== "1"
+            ) {
+                renderPage(pageNum, entry.target);
+            }
+
+            // =========================
+            // 2. STABLE ACTIVE PAGE TRACKING
+            // =========================
+            const ratio = entry.intersectionRatio || 0;
+
+            // 🔥 stability buffer prevents flicker between pages
+            if (ratio > bestRatio + 0.05) {
+                bestRatio = ratio;
+                bestPage = pageNum;
+            }
+        }
+
+        // =========================
+        // UPDATE ACTIVE PAGE (ONLY IF CHANGED)
+        // =========================
+        if (bestPage && bestPage !== currentPage) {
+            currentPage = bestPage;
+            updateActiveSidebar(bestPage);
+
+            // 🔥 ADD THIS
+            document.getElementById("pageInfo").innerText =
+                `Page ${bestPage} / ${totalPages}`;
         }
 
     }, {
         root: viewer,
-        threshold: 0.15
+        threshold: [0.1, 0.25, 0.5, 0.75],
+        rootMargin: "300px 0px"
     });
 
-    document.querySelectorAll(".page").forEach(p => {
-        pageObserver.observe(p);
+    // =========================
+    // OBSERVE ALL PAGES
+    // =========================
+    requestAnimationFrame(() => {
+        document.querySelectorAll(".page").forEach(p => {
+            pageObserver.observe(p);
+        });
     });
 }
+
+
 
 
 function getBaseWidth() {
     return document.querySelector(".pdf-viewer").clientWidth;
 }
 
-function resetZoom() {
-    console.log("♻️ Resetting zoom to default");
-
-    currentZoom = detectPaperZoom(pdfDoc.getPage(1));
-
-    isFitMode = false;
-
-    updateZoomUI();
-    rerenderVisiblePages(true);
-}
 
 
 function toggleFullscreen() {
@@ -432,84 +480,275 @@ function toggleFullscreen() {
     }
 
     // 🔥 re-render to recalc sizes
-    setTimeout(() => rerenderVisiblePages(true), 200);
+    setTimeout(() => initPageObserver(), 200);
 }
 
 
 
-document.addEventListener("keydown", (e) => {
-    if (!document.getElementById("pdfModal").style.display.includes("flex")) return;
 
-    if (e.key === "+") zoomIn();
-    if (e.key === "-") zoomOut();
+
+
+
+//======================================================
+// 🚀 PDF ZOOM SYSTEM (SINGLE SOURCE OF TRUTH)
+//======================================================
+
+
+//======================================================
+// 🎯 CORE ZOOM ENGINE (ONLY PLACE THAT CHANGES ZOOM)
+//======================================================
+//======================================================
+// 🎯 CORE ZOOM ENGINE (DEBUG + FIXED)
+//======================================================
+function applyZoom(newZoom, source = "unknown") {
+
+    console.log("🔥 applyZoom ENTERED", {
+        pdfDoc: !!pdfDoc,
+        isRenderingPDF,
+        zoomLock,
+        newZoom,
+        source,
+        currentZoom
+    });
+
+    if (!pdfDoc) {
+        console.warn("❌ BLOCKED: pdfDoc missing");
+        return;
+    }
+
+    if (isRenderingPDF) {
+        console.warn("❌ BLOCKED: isRenderingPDF = true");
+        return;
+    }
+
+    if (zoomLock) {
+        console.warn("❌ BLOCKED: zoomLock = true");
+        return;
+    }
+
+    renderedCache.clear();
+
+    const clamped = Math.min(3, Math.max(0.5, newZoom));
+
+    if (Math.abs(clamped - currentZoom) < 0.01) {
+        console.warn("❌ BLOCKED: zoom change too small", { clamped, currentZoom });
+        return;
+    }
+
+    const oldZoom = currentZoom;
+    currentZoom = clamped;
+
+    console.log(`🔍 ZOOM CHANGE (${source}): ${oldZoom} → ${currentZoom}`);
+
+    updateZoomUI();
+    renderGeneration++;
+
+    console.log("📦 PAGE COUNT:", document.querySelectorAll(".page").length);
+    console.log("🔁 RENDER GEN:", renderGeneration);
+
+    // =========================
+    // RESET PAGE STATE
+    // =========================
+    document.querySelectorAll(".page").forEach(p => {
+        p.dataset.rendered = "0";
+        p.dataset.rendering = "0";
+        p.innerHTML = ""; // 🔥 IMPORTANT: force visual reset
+    });
+
+    console.log("🔥 DOM RESET DONE");
+
+    // =========================
+    // STOP OBSERVER
+    // =========================
+    if (pageObserver) {
+        console.log("🛑 Disconnecting observer");
+        pageObserver.disconnect();
+    }
+
+    const pages = document.querySelectorAll(".page");
+
+    // =========================
+    // FORCE RE-RENDER ALL PAGES
+    // =========================
+    console.log("🚀 FORCING RENDER FOR ALL PAGES");
+
+    pages.forEach(p => {
+        const rect = p.getBoundingClientRect();
+        const isNearViewport =
+            rect.top < window.innerHeight * 2 &&
+            rect.bottom > -window.innerHeight;
+
+        if (isNearViewport) {
+            renderPage(Number(p.dataset.page), p);
+        }
+    });
+
+    // =========================
+    // RESTART OBSERVER
+    // =========================
+    requestAnimationFrame(() => {
+        console.log("♻️ REINITIALIZING OBSERVER");
+        initPageObserver();
+    });
+}
+
+
+window.addEventListener("resize", () => {
+    clearTimeout(resizeTimeout);
+
+    resizeTimeout = setTimeout(() => {
+        if (zoomMode === "fit") {
+            resetZoom();
+        }
+    }, 200);
+});
+
+
+//======================================================
+// 🔘 ZOOM ACTIONS (NO LOGIC, ONLY CALL ENGINE)
+//======================================================
+function pdfZoomIn() {
+    if (!pdfDoc || isRenderingPDF) return;
+    zoomMode = "user";
+    applyZoom(currentZoom + 0.1, "zoomIn");
+}
+
+function pdfZoomOut() {
+    if (!pdfDoc || isRenderingPDF) return;
+    zoomMode = "user";
+    applyZoom(currentZoom - 0.1, "zoomOut");
+}
+
+
+//======================================================
+// 📐 FIT ZOOM (ONLY ONE CALCULATION FUNCTION)
+//======================================================
+function computeFitZoom(page) {
+
+    const viewport = page.getViewport({ scale: 1 });
+
+    const viewer = document.querySelector(".pdf-viewer");
+    const sidebar = document.querySelector(".pdf-sidebar");
+    const sidebarHidden = document.querySelector(".pdf-modal")
+        ?.classList.contains("sidebar-hidden");
+
+    const sidebarWidth = (!sidebarHidden && sidebar) ? sidebar.offsetWidth : 0;
+
+    const vw = viewer.clientWidth - sidebarWidth;
+    const vh = viewer.clientHeight;
+
+    const scaleX = vw / viewport.width;
+    const scaleY = vh / viewport.height;
+
+    const ratio = viewport.height / viewport.width;
+
+    if (ratio > 1.25) return scaleY;              // portrait
+    if (ratio < 0.85) return scaleX;              // landscape
+    return Math.min(scaleX, scaleY) * 0.95;       // engineering docs
+}
+
+//======================================================
+// ♻️ RESET ZOOM (FIT MODE)
+//======================================================
+async function resetZoom() {
+
+    if (isRenderingPDF || !pdfDoc) return;
+
+    const page = await pdfDoc.getPage(1);
+
+    requestAnimationFrame(() => {
+        const fit = computeFitZoom(page);
+
+        console.log("FIT WIDTH DEBUG:", {
+            viewer: document.querySelector(".pdf-viewer").clientWidth,
+            fit
+        });
+
+        zoomMode = "fit";
+        applyZoom(fit, "resetFit");
+    });
+}
+
+
+//======================================================
+// 🖱️ KEYBOARD CONTROLS
+//======================================================
+document.addEventListener("keydown", (e) => {
+
+    const modalOpen = document.getElementById("pdfModal")
+        ?.style.display.includes("flex");
+
+    if (!modalOpen) return;
+
+    if (e.key === "+") pdfZoomIn();
+    if (e.key === "-") pdfZoomOut();
 
     if (e.key === "ArrowDown") {
-        document.querySelector(".pdf-viewer").scrollBy(0, 300);
+        document.querySelector(".pdf-viewer")?.scrollBy(0, 300);
     }
 
     if (e.key === "ArrowUp") {
-        document.querySelector(".pdf-viewer").scrollBy(0, -300);
+        document.querySelector(".pdf-viewer")?.scrollBy(0, -300);
     }
 });
 
-function logZoom(action, oldZoom, newZoom) {
-    console.log(
-        `%cZOOM ${action}`,
-        "color:#00aaff;font-weight:bold",
-        `${oldZoom.toFixed(3)} → ${newZoom.toFixed(3)}`
-    );
-}
-
-
-
+//======================================================
+// 🔘 BUTTON CONTROLS
+//======================================================
 function initZoomButtonListeners() {
-    const zoomInBtn = document.getElementById("btnZoomIn");
-    const zoomOutBtn = document.getElementById("btnZoomOut");
+
+    console.log("🔧 initZoomButtonListeners CALLED");
+
+    const inBtn = document.getElementById("btnZoomIn");
+    const outBtn = document.getElementById("btnZoomOut");
     const fitBtn = document.getElementById("btnFitWidth");
 
-    if (zoomInBtn) {
-        zoomInBtn.onclick = () => {
-            const prev = currentZoom;
+    console.log("BTN CHECK:", {
+        inBtn,
+        outBtn,
+        fitBtn
+    });
 
-            console.log("🔍 Zoom IN clicked");
-            console.log(`📊 Zoom: ${prev.toFixed(3)} → ${(prev + 0.1).toFixed(3)}`);
+    inBtn?.addEventListener("click", () => {
+        console.log("🔥 ZOOM IN CLICKED");
+        pdfZoomIn();
+    });
 
-            setZoom(currentZoom + 0.1, "ZOOM IN");
-        };
-    }
+    outBtn?.addEventListener("click", () => {
+        console.log("🔥 ZOOM OUT CLICKED");
+        pdfZoomOut();
+    });
 
-    if (zoomOutBtn) {
-        zoomOutBtn.onclick = () => {
-            const prev = currentZoom;
-
-            console.log("🔍 Zoom OUT clicked");
-            console.log(`📊 Zoom: ${prev.toFixed(3)} → ${(prev - 0.1).toFixed(3)}`);
-
-            setZoom(currentZoom - 0.1, "ZOOM OUT");
-        };
-    }
-
-    if (fitBtn) {
-        fitBtn.onclick = () => {
-            const prev = currentZoom;
-
-            console.log("📐 Fit Width clicked (RESET MODE)");
-            console.log(`📊 Zoom: ${prev.toFixed(3)} → RESET`);
-
-            resetZoom();
-        };
-    }
+    fitBtn?.addEventListener("click", () => {
+        console.log("🔥 FIT CLICKED");
+        resetZoom();
+    });
 }
 
 
+if (document.readyState === "loading") {
+    document.addEventListener("DOMContentLoaded", () => {
+        console.log("📌 DOM READY");
+        initZoomButtonListeners();
+    });
+} else {
+    console.log("📌 DOM ALREADY READY");
+    initZoomButtonListeners();
+}
 
-document.addEventListener("DOMContentLoaded", initZoomButtonListeners);
+//======================================================
+// 📱 RESPONSIVE ZOOM (AUTO FIT ON RESIZE)
+//======================================================
 
-//🚀 4. MOBILE ZOOM FIX (PINCH ZOOM READY)
+//======================================================
+// 🤏 PINCH ZOOM (MOBILE)
+//======================================================
+document.querySelector(".pdf-viewer")?.addEventListener("touchmove", (e) => {
 
-
-document.querySelector(".pdf-viewer").addEventListener("touchmove", (e) => {
+    if (isZooming) return;
     if (e.touches.length !== 2) return;
+
+    e.preventDefault();
 
     const dx = e.touches[0].clientX - e.touches[1].clientX;
     const dy = e.touches[0].clientY - e.touches[1].clientY;
@@ -523,100 +762,28 @@ document.querySelector(".pdf-viewer").addEventListener("touchmove", (e) => {
 
     const delta = distance - lastTouchDistance;
 
-    if (Math.abs(delta) > 10) {
-        if (delta > 0) zoomIn();
-        else zoomOut();
-    }
+    const ZOOM_SENSITIVITY = 25;
 
-    lastTouchDistance = distance;
+    if (Math.abs(delta) > ZOOM_SENSITIVITY) {
+        delta > 0 ? pdfZoomIn() : pdfZoomOut();
+        lastTouchDistance = distance;
+    }
 });
 
-document.querySelector(".pdf-viewer").addEventListener("touchend", () => {
+document.querySelector(".pdf-viewer")?.addEventListener("touchend", () => {
     lastTouchDistance = null;
 });
 
-
-function setZoom(newZoom, source = "unknown") {
-    const oldZoom = currentZoom;
-
-    currentZoom = Math.max(0.5, Math.min(newZoom, 3));
-
-    console.log(`🔍 ${source} | ${oldZoom.toFixed(3)} → ${currentZoom.toFixed(3)}`);
-
-    // 🔥 invalidate ALL previous renders
-    renderGeneration++;
-
-    isZooming = true;
-
-    renderedCache.clear();
-
-    rerenderAllPages();
-
-    updateZoomUI();
-
-    setTimeout(() => {
-        isZooming = false;
-    }, 150);
-}
-
-
-function zoomIn() {
-    setZoom(currentZoom + 0.1, "IN");
-}
-
-function zoomOut() {
-    setZoom(currentZoom - 0.1, "OUT");
-}
-
-
-
-document.addEventListener("contextmenu", function (e) {
-    if (e.target.tagName === "IFRAME") {
-        e.preventDefault();
-    }
+//======================================================
+// 🚫 CONTEXT MENU PROTECTION
+//======================================================
+document.addEventListener("contextmenu", (e) => {
+    if (e.target.tagName === "IFRAME") e.preventDefault();
 });
 
-
-
-function rerenderAllPages() {
-    const pages = document.querySelectorAll(".page");
-
-    renderedCache.clear();
-
-    pages.forEach(pageDiv => {
-        const pageNum = Number(pageDiv.dataset.page);
-        renderPage(pageNum, pageDiv);
-    });
-
-    updateZoomUI();
-}
-
-
-function rerenderVisiblePages(force = false) {
-    const viewer = document.querySelector(".pdf-viewer");
-    const viewerRect = viewer.getBoundingClientRect();
-
-    const pages = document.querySelectorAll(".page");
-
-    pages.forEach(pageDiv => {
-        const rect = pageDiv.getBoundingClientRect();
-
-        const isVisible =
-            rect.top < viewerRect.bottom &&
-            rect.bottom > viewerRect.top;
-
-        const pageNum = Number(pageDiv.dataset.page);
-        if (!pageNum) return;
-
-        if (isVisible || force) {
-            renderPage(pageNum, pageDiv);
-        }
-    });
-
-    updateZoomUI();
-}
-
-
+//======================================================
+// 📊 UI UPDATE
+//======================================================
 function updateZoomUI() {
     document.getElementById("zoomLevel").innerText =
         Math.round(currentZoom * 100) + "%";
@@ -624,33 +791,15 @@ function updateZoomUI() {
 
 
 
-function closePDF() {
-    document.getElementById("pdfModal").style.display = "none";
-    document.getElementById("pdfContainer").innerHTML = "";
 
-    unlockScroll(); // 🔥 IMPORTANT FIX
-}
 
-/* =====================
-   IMAGE MODAL
-===================== */
-function openImage(src) {
-    const modal = document.getElementById("imgModal");
-    const img = document.getElementById("modalImg");
 
-    if (modal && img) {
-        modal.style.display = "block";
-        img.src = src;
-    }
-}
 
-function closeImage() {
-    const modal = document.getElementById("imgModal");
 
-    if (modal) {
-        modal.style.display = "none";
-    }
-}
+
+
+
+
 
 
 
@@ -752,9 +901,11 @@ function getStatus() {
 
 
 async function downloadRenderedPDF() {
+
     const modal = document.querySelector(".pdf-modal");
 
     try {
+
         if (!pdfDoc) {
             Swal.fire({
                 icon: "error",
@@ -764,35 +915,24 @@ async function downloadRenderedPDF() {
             return;
         }
 
-        // =====================
-        // UI LOADER
-        // =====================
         Swal.fire({
             title: "Generating PDF",
             html: `
                 <div class="loader"></div>
-                <div id="progress-text" style="margin-top:10px;font-size:13px;">
-                    Preparing...
-                </div>
+                <div id="progress-text">Preparing...</div>
             `,
             allowOutsideClick: false,
             showConfirmButton: false,
-            didOpen: () => {
-                Swal.showLoading();
-                if (modal) modal.style.filter = "blur(2px)";
-            }
+            didOpen: () => Swal.showLoading()
         });
 
         const exportDoc = await PDFLib.PDFDocument.create();
 
-        const DPR = 2;            // 🔥 export sharpness multiplier (2–3 ideal)
-        const exportScale = 2.5;  // base PDF rendering scale
+        const DPR = 2;
+        const exportScale = currentZoom; // 🔥 IMPORTANT: match viewer state
 
         for (let i = 1; i <= pdfDoc.numPages; i++) {
 
-            // =====================
-            // PROGRESS UPDATE
-            // =====================
             const container = Swal.getHtmlContainer();
             const text = container?.querySelector("#progress-text");
 
@@ -801,44 +941,28 @@ async function downloadRenderedPDF() {
             }
 
             const page = await pdfDoc.getPage(i);
-
-            // =====================
-            // HIGH QUALITY VIEWPORT
-            // =====================
             const viewport = page.getViewport({ scale: exportScale });
 
             const canvas = document.createElement("canvas");
             const ctx = canvas.getContext("2d");
 
-            // 🔥 HIGH DPI CANVAS (crisp output)
             canvas.width = viewport.width * DPR;
             canvas.height = viewport.height * DPR;
 
-            canvas.style.width = viewport.width + "px";
-            canvas.style.height = viewport.height + "px";
-
             ctx.scale(DPR, DPR);
 
-            // =====================
-            // RENDER PAGE
-            // =====================
-            await page.render({
+            // 🔥 SAME rendering style as viewer (no duplication logic)
+            const renderTask = page.render({
                 canvasContext: ctx,
                 viewport
-            }).promise;
+            });
 
-            // =====================
-            // WATERMARK
-            // =====================
-            if (typeof drawWatermark === "function") {
-                drawWatermark(ctx, canvas);
-            }
+            await renderTask.promise;
 
-            // =====================
-            // EXPORT IMAGE (KEEP PNG ONLY)
-            // =====================
+            // 🔥 reuse SAME watermark function (no duplication)
+            drawWatermark(ctx, canvas);
+
             const imgData = canvas.toDataURL("image/png");
-
             const img = await exportDoc.embedPng(imgData);
 
             const pdfPage = exportDoc.addPage([
@@ -853,14 +977,6 @@ async function downloadRenderedPDF() {
                 height: viewport.height
             });
         }
-
-        // =====================
-        // FINALIZING
-        // =====================
-        const container = Swal.getHtmlContainer();
-        const text = container?.querySelector("#progress-text");
-
-        if (text) text.innerText = "Finalizing PDF...";
 
         const bytes = await exportDoc.save();
 
@@ -877,7 +993,6 @@ async function downloadRenderedPDF() {
         Swal.fire({
             icon: "success",
             title: "Download Complete",
-            text: "Your PDF is ready!",
             timer: 2000,
             showConfirmButton: false
         });
@@ -895,9 +1010,6 @@ async function downloadRenderedPDF() {
         if (modal) modal.style.filter = "none";
     }
 }
-
-
-
 //PDF SECURITY
 
 //Disable right-click
@@ -911,37 +1023,128 @@ document.addEventListener("dragstart", e => e.preventDefault());
 //MOBILE RESPONSIVENESS (BASIC)
 //1. CRITICAL MOBILE FIX: HANDLE ROTATION / RESIZE
 
-window.addEventListener("resize", () => {
-    clearTimeout(resizeTimeout);
 
-    resizeTimeout = setTimeout(async () => {
-        if (!pdfDoc) return;
 
-        console.log("📱 viewport changed → rerender");
 
-        try {
-            const page = await pdfDoc.getPage(1);
 
-            currentZoom = detectPaperZoom(page);
 
-            rerenderVisiblePages(true);
-            updateZoomUI();
+//--------------------PDF SEARCH (OPTIMIZED)--------------------
 
-        } catch (err) {
-            console.error("Resize render error:", err);
-        }
+let textCache = new Map();
+let firstMatchFound = false;
 
-    }, 250);
-});
+// ✅ Cache page text (fast repeated searches)
+async function getPageText(page, index) {
+    if (textCache.has(index)) return textCache.get(index);
+
+    const textContent = await page.getTextContent();
+    const text = textContent.items
+        .map(i => i.str)
+        .join(" ")
+        .toLowerCase();
+
+    textCache.set(index, text);
+    return text;
+}
+
+// ✅ MAIN SEARCH FUNCTION (FIXED)
+async function searchPDF() {
+    const input = document.getElementById("searchInput");
+    const query = input.value.trim().toLowerCase();
+
+    if (!query || !pdfDoc) return;
+
+    firstMatchFound = false;
+
+    const pages = document.querySelectorAll(".page");
+
+    // clear previous highlights
+    pages.forEach(p => (p.style.outline = "none"));
+
+    // sequential async loop (stable + cached)
+    const BATCH_SIZE = 3;
+
+    for (let i = 0; i < pages.length; i += BATCH_SIZE) {
+
+        const batch = pages.slice(i, i + BATCH_SIZE);
+
+        await Promise.all(batch.map(async (pageDiv, j) => {
+            const index = i + j;
+
+            const page = await pdfDoc.getPage(index + 1);
+            const text = await getPageText(page, index);
+
+            if (text.includes(query)) {
+                pageDiv.style.outline = "4px solid yellow";
+
+                if (!firstMatchFound) {
+                    firstMatchFound = true;
+                    pageDiv.scrollIntoView({ behavior: "smooth", block: "center" });
+                }
+            }
+        }));
+    }
+}
+
+
+
 
 //🚀 6. MEMORY CLEANUP (IMPORTANT FOR MOBILE)
 function closePDF() {
-    document.getElementById("pdfModal").style.display = "none";
+
+    const modal = document.getElementById("pdfModal");
+
+    modal.style.display = "none";
+
+    // =========================
+    // 🛑 CANCEL ALL ACTIVE RENDERS FIRST
+    // =========================
+    document.querySelectorAll(".page").forEach(p => {
+        if (p._renderTask) {
+            try { p._renderTask.cancel(); } catch(e){}
+        }
+    });
+
+    // =========================
+    // 🔥 CLEAN UI
+    // =========================
     document.getElementById("pdfContainer").innerHTML = "";
+    document.getElementById("pdfSidebar").innerHTML = "";
 
+    // =========================
+    // 🔥 RESET PDF STATE
+    // =========================
     pdfDoc = null;
-    renderedCache.clear();
+    currentZoom = 1.0;
+    currentPage = 1;
+    renderGeneration++;
+    totalPages = 0;
 
+    // =========================
+    // 🔥 RESET FLAGS
+    // =========================
+    isZooming = false;
+    isRenderingPDF = false;
+    zoomLock = false;
+    lastTouchDistance = null;
+
+    // =========================
+    // 🔥 STOP OBSERVER
+    // =========================
+    if (pageObserver) {
+        pageObserver.disconnect();
+        pageObserver = null;
+    }
+
+    // =========================
+    // 🧹 CLEAR CACHE
+    // =========================
+    renderedCache.clear();
+    pdfCache.clear();
+    textCache.clear();
+
+    // =========================
+    // 🔓 RESTORE SCROLL
+    // =========================
     unlockScroll();
 }
-

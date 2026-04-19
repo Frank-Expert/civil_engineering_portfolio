@@ -99,6 +99,11 @@ window.addEventListener("load", animateSkills);
 
 
 
+
+
+
+
+
 const FILES = {
     resume: "portfolio/frankline_civil_engineering_resume.pdf",
 
@@ -123,7 +128,7 @@ function requestDocument(type) {
     const options = document.getElementById("portfolioOptions");
     const label = document.getElementById("portfolioLabel");
 
-    const viewBtn = document.getElementById("viewBtn");
+    //const viewBtn = document.getElementById("viewBtn");
     const downloadBtn = document.getElementById("downloadBtn");
 
     const inputs = document.querySelectorAll("#portfolioOptions input");
@@ -139,7 +144,7 @@ function requestDocument(type) {
     });
 
     // ALWAYS hide both buttons first
-    viewBtn.style.display = "none";
+    //viewBtn.style.display = "none";
     downloadBtn.style.display = "none";
     actions.style.display = "flex";
 
@@ -151,7 +156,7 @@ function requestDocument(type) {
     // =====================
     if (type === "Portfolio View") {
 
-        requestText.innerText = "Select a portfolio";
+        requestText.innerText = "Select a portfolio to View";
 
         options.classList.add("show");
         options.style.display = "block";
@@ -163,7 +168,7 @@ function requestDocument(type) {
             input.name = "portfolioView";
         });
 
-        viewBtn.style.display = "inline-block";
+        //viewBtn.style.display = "inline-block";
         actions.style.display = "none";
     }
 
@@ -192,7 +197,7 @@ function requestDocument(type) {
 
         options.style.display = "none";
 
-        viewBtn.style.display = "none";
+        //viewBtn.style.display = "none";
         downloadBtn.style.display = "none"; // IMPORTANT
 
         actions.style.display = "flex";
@@ -209,7 +214,7 @@ function requestDocument(type) {
         options.style.display = "none";
 
         downloadBtn.style.display = "none";
-        viewBtn.style.display = "none";
+        //viewBtn.style.display = "none";
     }
 
     // =====================
@@ -224,22 +229,26 @@ function openResume() {
     openPDF(FILES.resume);
 }
 
-function viewSelectedPortfolio() {
-    const selected = document.querySelector(
-        "#portfolioOptions input[type='radio']:checked"
-    );
+document.addEventListener("DOMContentLoaded", () => {
+    const options = document.querySelectorAll("#portfolioList input");
 
-    if (!selected) {
-        alert("Please select a portfolio to view.");
-        return;
-    }
+    options.forEach(input => {
+        input.addEventListener("change", () => {
 
-    const file = portfolioFiles[selected.value];
+            const file = portfolioFiles[input.value];
 
-    closeRequest();
-    openPDF(file);
-}
+            if (!file) return;
 
+            // optional UX: uncheck others if you want single-open behavior
+            options.forEach(i => {
+                if (i !== input) i.checked = false;
+            });
+
+            closeRequest();
+            openPDF(file);
+        });
+    });
+});
 
 function getSelectedPortfolios() {
     const checked = document.querySelectorAll(
@@ -341,53 +350,6 @@ function toggleSection(id, btn) {
 
 
 
-/* =====================
-   AUTO PROJECT SLIDER
-===================== */
-
-function initAutoSliders() {
-    const sliders = document.querySelectorAll(".slider");
-
-    sliders.forEach((slider) => {
-        const slides = slider.querySelector(".slides");
-        const images = slider.querySelectorAll("img");
-
-        let index = 0;
-        const total = images.length;
-
-        if (total <= 1) return;
-
-        function goToSlide(i) {
-            index = (i + total) % total;
-            slider.dataset.index = index;
-            slides.style.transform = `translateX(-${index * 100}%)`;
-        }
-
-        function nextSlide() {
-            goToSlide(index + 1);
-        }
-
-        let interval = setInterval(nextSlide, 3500);
-
-        // pause on hover
-        slider.addEventListener("mouseenter", () => {
-            clearInterval(interval);
-        });
-
-        slider.addEventListener("mouseleave", () => {
-            interval = setInterval(nextSlide, 3500);
-        });
-
-        // store index globally for consistency
-        slider.dataset.index = 0;
-    });
-}
-/* RUN ON LOAD */
-window.addEventListener("load", initAutoSliders);
-
-
-
-
 
 
 
@@ -471,9 +433,6 @@ function getSelectedServices() {
 }
 
 
-// =====================
-// SUBMIT PROJECT (WHATSAPP / EMAIL)
-// =====================
 // =====================
 // SUBMIT PROJECT (WHATSAPP / EMAIL)
 // =====================

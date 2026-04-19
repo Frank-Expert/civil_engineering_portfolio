@@ -869,147 +869,83 @@ body::after {
 
 
 
-
-/* =====================
-   SKILLS SUMMARY (TABLE)
-===================== */
+/* =========================================================
+   SKILLS SECTION (GLOBAL WRAPPER)
+========================================================= */
 .skills-summary {
     padding: 60px 10%;
 }
 
-/* table */
-.skills-table {
-    width: 100%;
-    border-collapse: collapse;
+/* =========================================================
+   ================== TECHNICAL SKILLS ======================
+   (Software Skills / Progress Bars Section)
+========================================================= */
 
-    margin-top: 25px;
-
-    background: rgba(255, 255, 255, 0.02);
-    backdrop-filter: blur(10px);
-
-    border-radius: 12px;
-    overflow: hidden;
-
-    color: #e2e8f0;
-    box-shadow: 0 20px 50px rgba(0,0,0,0.25);
-}
-
-/* header */
-.skills-table thead {
-    background: rgba(56, 189, 248, 0.12);
-}
-
-.skills-table th {
-    text-align: left;
-
-    padding: 16px 18px;
-
-    font-size: 1rem;
-    color: #38bdf8;
-
-    border-bottom: 1px solid rgba(56, 189, 248, 0.25);
-}
-
-/* cells */
-.skills-table td {
-    padding: 18px;
-    vertical-align: top;
-
-    border-bottom: 1px solid rgba(255, 255, 255, 0.06);
-}
-
-/* first column */
-.skills-table td:first-child {
-    width: 28%;
-    font-weight: 600;
-    color: #f1f5f9;
-}
-
-/* list */
-.skills-table td ul {
-    margin: 0;
-    padding-left: 18px;
-}
-
-.skills-table td li {
-    margin-bottom: 8px;
-    line-height: 1.5;
-    color: #cbd5e1;
-}
-
-/* row hover */
-.skills-table tbody tr {
-    transition: 0.3s ease;
-}
-
-.skills-table tbody tr:hover {
-    background: rgba(56, 189, 248, 0.05);
-}
-
-/* =====================
-   SKILLS GRID
-===================== */
+/* GRID */
 .skills-container {
     display: grid;
-    grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-
-    gap: 25px;
-    margin-top: 40px;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-top: 30px;
 }
 
-/* category card */
+/* CATEGORY CARD */
 .skill-category {
     background: rgba(255, 255, 255, 0.04);
     border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 14px;
 
-    border-radius: 16px;
-    padding: 20px;
+    padding: 16px 18px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
 
-    backdrop-filter: blur(12px);
-    box-shadow: 0 10px 30px rgba(0,0,0,0.25);
-
-    transition: 0.3s ease;
+    transition: transform 0.25s ease, border-color 0.25s ease;
 }
 
 .skill-category:hover {
-    transform: translateY(-6px);
+    transform: translateY(-4px);
     border-color: rgba(56, 189, 248, 0.4);
 }
 
-/* title */
+/* TITLE */
 .skill-category h3 {
-    font-size: 1rem;
-    margin-bottom: 18px;
+    font-size: 0.95rem;
     color: #38bdf8;
+    font-weight: 600;
+    margin-bottom: 12px;
 }
 
-/* skill row */
+/* SKILL ROW */
 .skill {
-    margin-bottom: 16px;
+    margin-bottom: 14px;
 }
 
-/* header row */
+/* NAME + % ROW */
 .skill-head {
     display: flex;
     justify-content: space-between;
+    align-items: center;
     margin-bottom: 6px;
 }
 
-.skill span {
+.skill-head span {
     font-size: 0.9rem;
     color: #e2e8f0;
 }
 
+/* PERCENT (RIGHT ALIGNED CLEAN STYLE) */
 .percent {
+    font-size: 0.8rem;
+    font-weight: 600;
     color: #38bdf8;
-    font-weight: bold;
+    min-width: 42px;
+    text-align: right;
 }
 
-/* progress bar */
+/* PROGRESS BAR */
 .bar {
     width: 100%;
-    height: 10px;
-
+    height: 6px; /* thinner bar */
     border-radius: 50px;
     background: #0f172a;
 
@@ -1025,40 +961,96 @@ body::after {
 
     background: repeating-linear-gradient(
         90deg,
-        rgba(56, 189, 248, 0.08),
-        rgba(56, 189, 248, 0.08) 10px,
-        transparent 10px,
-        transparent 20px
+        rgba(56, 189, 248, 0.06),
+        rgba(56, 189, 248, 0.06) 8px,
+        transparent 8px,
+        transparent 16px
     );
 }
 
-/* fill */
+/* FILL */
 .fill {
     height: 100%;
     width: 0%;
-
     background: linear-gradient(90deg, #38bdf8, #0ea5e9, #22c55e);
-
     border-radius: 50px;
-    transition: width 1.5s ease;
 
-    box-shadow: 0 0 15px rgba(56, 189, 248, 0.4);
+    transition: width 0.8s ease;
+    will-change: width;
 }
 
+/* ACTIVE ANIMATION */
 .bar.active .fill {
     width: var(--value);
 }
 
-/* hover glow */
+/* subtle glow */
 .skill-category:hover .fill {
-    box-shadow: 0 0 18px rgba(56, 189, 248, 0.6);
+    box-shadow: 0 0 10px rgba(56, 189, 248, 0.35);
 }
 
-/* fade-in animation */
+
+/* =========================================================
+   ============ PROFESSIONAL SKILLS (GRID CARDS) ============
+   (Text-based Skills Summary Section)
+========================================================= */
+
+.skills-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(260px, 1fr));
+    gap: 18px;
+    margin-top: 30px;
+}
+
+/* CARD */
+.skill-card {
+    background: rgba(255, 255, 255, 0.04);
+    border: 1px solid rgba(56, 189, 248, 0.15);
+    border-radius: 14px;
+
+    padding: 16px 18px;
+    backdrop-filter: blur(10px);
+    box-shadow: 0 10px 25px rgba(0,0,0,0.2);
+
+    transition: transform 0.25s ease, border-color 0.25s ease;
+}
+
+.skill-card:hover {
+    transform: translateY(-4px);
+    border-color: rgba(56, 189, 248, 0.4);
+}
+
+/* TITLE */
+.skill-card h3 {
+    font-size: 0.95rem;
+    color: #38bdf8;
+    font-weight: 600;
+    margin-bottom: 10px;
+}
+
+/* LIST */
+.skill-card ul {
+    margin: 0;
+    padding-left: 16px;
+}
+
+.skill-card li {
+    font-size: 0.85rem;
+    color: #cbd5e1;
+    line-height: 1.45;
+    margin-bottom: 6px;
+}
+
+
+/* =========================================================
+   GLOBAL UTILITIES
+========================================================= */
+
+/* FADE IN */
 .fade-in {
     opacity: 0;
-    transform: translateY(30px);
-    transition: 0.6s ease;
+    transform: translateY(20px);
+    transition: 0.5s ease;
 }
 
 .fade-in.visible {
@@ -1066,7 +1058,7 @@ body::after {
     transform: translateY(0);
 }
 
-/* scrollbar */
+/* SCROLLBAR */
 ::-webkit-scrollbar {
     width: 8px;
 }
@@ -1076,75 +1068,54 @@ body::after {
     border-radius: 10px;
 }
 
-/* =====================
-   MOBILE (<= 480px)
-===================== */
+
+/* =========================================================
+   RESPONSIVE DESIGN
+========================================================= */
+
+/* MOBILE */
 @media (max-width: 480px) {
 
     .skills-summary {
         padding: 40px 6%;
     }
 
-    /* TABLE → STACK MODE (IMPORTANT FIX) */
-    .skills-table {
-        display: block;
-        overflow-x: auto;
-        white-space: nowrap;
-    }
-
-    .skills-table th,
-    .skills-table td {
-        padding: 12px;
-        font-size: 0.85rem;
-    }
-
-    .skills-table td:first-child {
-        width: auto;
-    }
-
-    /* GRID */
-    .skills-container {
+    .skills-container,
+    .skills-grid {
         grid-template-columns: 1fr;
-        gap: 16px;
+        gap: 14px;
     }
 
-    .skill-category {
-        padding: 16px;
+    .skill-category,
+    .skill-card {
+        padding: 14px;
     }
 
-    .skill-category:hover {
+    .skill-category:hover,
+    .skill-card:hover {
         transform: none;
     }
 
     .bar {
-        height: 8px;
+        height: 7px;
     }
 }
 
-
-/* =====================
-   TABLET (481px - 1024px)
-===================== */
+/* TABLET */
 @media (min-width: 481px) and (max-width: 1024px) {
 
     .skills-summary {
         padding: 50px 8%;
     }
 
-    .skills-container {
+    .skills-container,
+    .skills-grid {
         grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
-        gap: 20px;
-    }
-
-    .skill-category {
-        padding: 18px;
-    }
-
-    .skills-table th,
-    .skills-table td {
-        padding: 14px 16px;
+        gap: 16px;
     }
 }
+
+
 
 
 
@@ -1554,12 +1525,25 @@ body::after {
 .portfolio-checkboxes label {
     display: flex;
     align-items: center;
-    gap: 8px;
+    gap: 10px;
 
+    padding: 10px 12px;
+    margin-bottom: 8px;
+
+    border-radius: 10px;
     cursor: pointer;
 
-    font-size: 0.9rem;
-    color: #cbd5f5;
+    background: rgba(255,255,255,0.03);
+    transition: 0.2s ease;
+}
+
+.portfolio-checkboxes label:hover {
+    background: rgba(56, 189, 248, 0.08);
+}
+
+.portfolio-checkboxes input {
+    accent-color: #38bdf8;
+    cursor: pointer;
 }
 
 .portfolio-checkboxes input {
