@@ -244,18 +244,24 @@ body::after {
 }
 
 .hero-buttons button {
-    padding: 12px 18px;
+    padding: 6px 12px;
 
     border-radius: 8px;
-    border: none;
+    border: 1px solid #38bdf8;
 
     cursor: pointer;
 
-    background: #38bdf8;
-    color: #0b1220;
+    background: transparent;
+    color: #38bdf8;
 
-    transition: 0.3s;
+    font-size: 0.75rem;
+    font-weight: 600;
+
+    transition: 0.25s ease;
+
+    white-space: nowrap;
 }
+
 
 .hero-buttons .ghost {
     background: transparent;
@@ -264,7 +270,11 @@ body::after {
 }
 
 .hero-buttons button:hover {
-    transform: translateY(-3px);
+    background: #38bdf8;
+    color: #0b1220;
+
+    transform: translateY(-2px);
+    box-shadow: 0 8px 20px rgba(56, 189, 248, 0.3);
 }
 
 /* =====================
@@ -458,10 +468,6 @@ body::after {
     transition: 0.25s ease;
 }
 
-.doc-item-inline:hover {
-    transform: translateY(-3px);
-    border-color: rgba(56, 189, 248, 0.35);
-}
 
 .doc-title {
     font-size: 0.9rem;
@@ -489,22 +495,91 @@ body::after {
     border-color: #22c55e;
 }
 
+.hero-roles {
+    margin-top: 12px;
+    padding: 0;
+
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+
+    gap: 8px;
+
+    line-height: 1; /* removes vertical "p" spacing issue */
+}
+
+/* role tags */
 .hero-roles span {
+    display: inline-flex;
+    align-items: center;
+
     background: rgba(56, 189, 248, 0.08);
     border: 1px solid rgba(56, 189, 248, 0.2);
 
-    padding: 4px 10px;
+    padding: 6px 12px;
     border-radius: 999px;
 
     font-size: 0.8rem;
     color: #e2e8f0;
 
+    white-space: nowrap; /* prevents breaking inside tags */
+
     transition: 0.25s ease;
 }
 
-.hero-roles span:hover {
-    background: rgba(56, 189, 248, 0.2);
-    transform: translateY(-2px);
+
+/* MOBILE FIX */
+@media (max-width: 480px) {
+    .hero-roles {
+        gap: 6px;
+        margin-top: 10px;
+    }
+
+    .hero-roles span {
+        font-size: 0.72rem;
+        padding: 5px 10px;
+    }
+}
+
+@media (max-width: 480px) {
+
+    .doc-row-inline {
+        flex-direction: row !important;
+        flex-wrap: nowrap;
+        justify-content: center;
+        gap: 10px;
+    }
+
+    .doc-item-inline {
+        min-width: auto !important;
+        flex: 1;
+    }
+}
+
+
+@media (max-width: 480px) {
+
+    .hero-buttons {
+        gap: 6px;
+    }
+
+    .hero-buttons button {
+        padding: 7px 11px;   /* force smaller */
+        font-size: 0.95rem;   /* tighter text */
+        border-radius: 6px;
+
+        min-width: auto;
+        width: auto;
+
+        line-height: 1;
+        white-space: nowrap;
+    }
+
+    /* make ghost consistent too */
+    .hero-buttons .ghost {
+        padding: 7px 11px ;
+        font-size: 0.85rem ;
+    }
 }
 
 /* =====================
@@ -513,12 +588,12 @@ body::after {
 @media (max-width: 480px) {
 
     .hero {
-        padding: 0 6%;
+        padding: 0 4%;
     }
 
     .hero-content {
-        padding: 20px 16px;
-        transform: translateY(120px);
+        padding: 10px 8px;
+        transform: translateY(80px);
     }
 
     .hero-content h1 {
@@ -530,7 +605,6 @@ body::after {
     }
 
     .hero-buttons {
-        flex-direction: column;
         gap: 8px;
     }
 
@@ -601,8 +675,9 @@ body::after {
    SECTIONS
 ===================== */
 .section {
-    padding: 70px 10%;
+    padding: 70px clamp(16px, 5vw, 120px);
 }
+
 
 .section h2 {
     font-size: 2rem;
@@ -1167,9 +1242,25 @@ body::after {
     transition: 0.25s ease;
 }
 
+.footer-box ul li a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
 .footer-box ul li a:hover {
-    color: #38bdf8;
+    color: #e2e8f0;   /* soft white instead of blue */
     padding-left: 5px;
+}
+
+.footer-box p a {
+    color: #cbd5e1;
+    text-decoration: none;
+    transition: 0.2s ease;
+}
+
+.footer-box p a:hover {
+    color: #e2e8f0;
 }
 
 /* bottom */

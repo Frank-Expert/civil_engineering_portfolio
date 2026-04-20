@@ -111,28 +111,33 @@
 /* =====================
    VIEWER
 ===================== */
+/* =====================
+   VIEWER (CLEAN FIXED CORE)
+===================== */
 .pdf-viewer {
     flex: 1;
-    overflow-y: auto;
-    overflow: auto; /* instead of only overflow-y */
-    display: flex;
+    overflow: auto;
+    display: block;
+
+    /* center content horizontally only */
     justify-content: center;
 
-    /* ✅ unified padding */
-    padding: 10px 10px;
+    /* IMPORTANT: prevent vertical centering bugs */
+    align-items: center;
 
+    padding: 10px;
     box-sizing: border-box;
     min-width: 0;
 
-    /* ✅ stable height */
     height: calc(100vh - 110px);
 
-    transition: all 0.25s ease;
-}
-.pdf-viewer {
-    will-change: transform;
+    /* smooth scrolling only (no transform hacks here) */
     -webkit-overflow-scrolling: touch;
+
+    /* IMPORTANT: prevents scroll jump bugs in some browsers */
+    scroll-behavior: auto;
 }
+
 
 .pdf-modal.sidebar-hidden .page,
 .pdf-modal.true-fullscreen .page {
@@ -144,24 +149,37 @@
 #pdfContainer {
     display: flex;
     flex-direction: column;
-    align-items: flex-start; /* 🔥 KEY FIX */
+    align-items: center;
+    justify-content: flex-start;
+
+    width: 100%;
     gap: 20px;
 }
 
 
 .page {
     display: flex;
+    width: 100%;
     justify-content: center;
-    width: auto;           /* 🔥 allow zoom to actually resize */
+    max-width: none;   /* ✅ FIX */
     box-sizing: border-box;
 }
+
 
 
 #pdfContainer canvas {
     background: #fff;
     border-radius: 6px;
     box-shadow: 0 8px 25px rgba(0,0,0,0.5);
+
+    display: block;
+    margin: 0 auto;
+
+    /* prevents unwanted scaling */
+    max-width: none;
 }
+
+
 
 /* =====================
    MOBILE (<= 480px)
@@ -202,21 +220,14 @@
     /* VIEWER */
     .pdf-viewer {
         padding: 6px;
-        height: calc(100vh - 96px);
     }
 
     #pdfContainer {
         gap: 12px;
     }
 
-    .page {
-        width: 100%;
-        justify-content: center;
-    }
-
     #pdfContainer canvas {
-        max-width: 100%;
-        height: auto;
+        display: block;
     }
 }
 
@@ -254,19 +265,14 @@
     /* VIEWER */
     .pdf-viewer {
         padding: 8px;
-        height: calc(100vh - 104px);
     }
 
     #pdfContainer {
         gap: 16px;
     }
 
-    .page {
-        width: 100%;
-    }
-
     #pdfContainer canvas {
-        max-width: 100%;
+        display: block;
     }
 }
 
@@ -536,6 +542,11 @@
 .pdf-thumb canvas {
     width: 100%;
     display: block;
+}
+
+.pdf-thumb canvas {
+    will-change: transform;
+    backface-visibility: hidden;
 }
 
 .pdf-thumb span {
